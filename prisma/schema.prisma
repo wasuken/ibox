@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Image {
+  id          Int          @id @default(autoincrement())
+  url         String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  groupImages GroupImage[]
+}
+
+model Group {
+  id          Int          @id @default(autoincrement())
+  name        String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  groupImages GroupImage[]
+  groupTags   GroupTag[]
+}
+
+model Tag {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  groupTags   GroupTag[]
+  groupImages GroupImage[]
+}
+
+model GroupImage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  image     Image    @relation(fields: [imageId], references: [id])
+  imageId   Int
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   Int
+  Tag       Tag?     @relation(fields: [tagId], references: [id])
+  tagId     Int?
+}
+
+model GroupTag {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   Int
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  tagId     Int
+}
