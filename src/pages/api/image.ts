@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-const formidable = require("formidable");
+import formidable from "formidable";
 
-// これ必要なことに気づかなかった↓
 export const config = {
   api: {
     bodyParser: false,
@@ -24,8 +23,11 @@ export default async function handler(
         });
         return;
       }
-      const file = files.file;
-      // ファイルをなんやかんやする
+      const file = files.image as formidable.File;
+      const path = file.filepath;
+      const name = file.originalFilename;
+      const mime = file.mimetype;
+      const tags = fields.tags;
     });
   }
 }

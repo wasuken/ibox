@@ -1,3 +1,52 @@
+.header {
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  /* justify-content: space-between; */
+  justify-content: flex-start;
+  gap: 2;
+  align-items: center;
+  padding: 10px;
+}
+.header > * {
+  padding: 0 10px;
+}
+.h2title {
+  text-decoration: none;
+  color: white;
+}
+.h2title:hover {
+  color: gray;
+}
+
+.header-left h1 {
+  margin: 0 5vw 0 0;
+}
+.upload-link {
+  color: white;
+  text-decoration: none;
+}
+.upload-link:hover {
+  color: gray;
+  text-decoration: none;
+}
+
+.search-form input[type="text"] {
+  padding: 5px;
+  border: none;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+.search-form button {
+  padding: 5px 10px;
+  background-color: #fff;
+  border: none;
+  border-radius: 3px;
+  color: #333;
+  cursor: pointer;
+}
+
 /* タグエリア */
 .tag-area {
   margin: 20px;

@@ -19,7 +19,7 @@ export interface SearchParams {
   query: string | undefined;
   // タグリスト
   // undefinedなら[]
-  tagList: string[] | undefined;
+  tagList: Tag[] | undefined;
   // ページカーソル
   // undefinedなら0
   page: number | undefined;
