@@ -39,6 +39,7 @@ model Tag {
 
 model GroupImage {
   id        Int      @id @default(autoincrement())
+  display_no Int     @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   image     Image    @relation(fields: [imageId], references: [id])
