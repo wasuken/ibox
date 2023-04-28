@@ -24,7 +24,6 @@ export default function Home() {
   };
 
   const handleTagClick = (tag) => {
-    alert(tag);
     setTags(tags.filter((t) => t !== tag));
   };
 
@@ -67,13 +66,19 @@ export default function Home() {
     event.preventDefault();
     router.replace("/");
   };
+  const handleDeleteClick = () => {
+    setIsBalloon(false);
+  };
 
   return (
     <Layout>
       <form className={styles.form}>
         {isBalloon && (
-          <div className={styles.container}>
-            <div className={styles.balloon}>{balloonMessage}</div>
+          <div className={styles.balloonContainer}>
+            <div className={styles.message}>{balloonMessage}</div>
+            <button onClick={handleDeleteClick} className={styles.deleteButton}>
+              &#x2716;
+            </button>
           </div>
         )}
         <label className={styles.label}>
