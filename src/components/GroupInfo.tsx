@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "@/styles/GroupInfo.module.css";
-import { Group } from "@types";
+import { Group } from "@/types";
 
 type Props = {
   group: Group;
