@@ -1,0 +1,28 @@
+.panel {
+  display: flex;
+  height: 100vh;
+}
+
+.menu {
+  width: 200px;
+  background-color: #f1f1f1;
+  padding: 10px;
+}
+
+.menuItem {
+  cursor: pointer;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+.menuItem:hover,
+.menuItem.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
