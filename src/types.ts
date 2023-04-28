@@ -5,9 +5,13 @@ export interface Base {
 export interface Tag extends Base {}
 export interface Image extends Base {
   path: string;
+  name: string;
+  size: number;
+  displayNo: number;
   createdAt: Date;
 }
 export interface Group extends Base {
+  description: string;
   tags: Tag[];
   images: Image[];
   createdAt: Date;
