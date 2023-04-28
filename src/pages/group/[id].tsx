@@ -70,17 +70,18 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
 const GroupPage: NextPage<Props> = (props: Props) => {
   const [selectedItem, setSelectedItem] = useState(0);
-  const menuItems = [
-    "グループ詳細",
-    "グループ画像アップロード",
-    "グループ画像リスト",
-  ];
-  const contents = [
-    <GroupInfo key={0} group={props.group} onSave={updateGroup} />,
-    <GroupImageUploader key={1} onUpload={(_f) => {}} />,
-    <GroupImageList key={2} images={props.group.images} />,
-  ];
-  function updateGroup(group: Group) {
+  const postImage = (imageFile: File, displayNo: number) => {
+    const formData = new FormData();
+    formData.set("image", imageFile);
+    formData.set("name", imageFile.name);
+    formData.set("size", imageFile.size.toString());
+    formData.set("displayNo", displayNo.toString());
+    return fetch(`/api/group/image`, {
+      method: "POST",
+      body: formData,
+    });
+  };
+  const updateGroup = (group: Group) => {
     fetch(`/api/group`, {
       method: "PUT",
       body: JSON.stringify(group),
@@ -88,7 +89,17 @@ const GroupPage: NextPage<Props> = (props: Props) => {
         "Content-Type": "application/json",
       },
     });
-  }
+  };
+  const menuItems = [
+    "グループ詳細",
+    "グループ画像アップロード",
+    "グループ画像リスト",
+  ];
+  const contents = [
+    <GroupInfo key={0} group={props.group} onSave={updateGroup} />,
+    <GroupImageUploader key={1} onUpload={postImage} />,
+    <GroupImageList key={2} images={props.group.images} />,
+  ];
   return (
     <Layout>
       <div className={styles.panel}>

@@ -1,8 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
 import formidable from "formidable";
-
-const prisma = new PrismaClient();
 
 export const config = {
   api: {
@@ -28,26 +25,8 @@ export default async function handler(
       }
       const file = files.image as formidable.File;
       const path = file.filepath;
-      const name = file.originalFilename ?? "";
-      const size = file.size;
-      let tags = fields.tags;
-      if (tags as string[]) {
-      } else {
-        tags = [];
-      }
-      const image = await prisma.image.create({
-        data: {
-          name,
-          path,
-          size,
-        },
-      });
-      const imageId = image.id;
-      await prisma.groupImage.create({
-        data: {
-          imageId,
-        },
-      });
+      const name = file.originalFilename;
+      const displayNo = fields.displayNo;
     });
   }
 }
