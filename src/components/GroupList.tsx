@@ -13,10 +13,16 @@ export default function GroupList(props: Props) {
       <h2>グループ</h2>
       <div className={styles["group-list"]}>
         {groupList.map((group, i) => (
-          <div className={styles["group-item"]} key={i}>
-            <a href={`/group/${group.id}`}>
+          <a
+            href={`/group/${group.id}`}
+            className={styles["group-item"]}
+            key={i}
+          >
+            <div>
               {group.images?.length > 0 && (
                 <NextImage
+                  width={500}
+                  height={500}
                   src={group.images[0].path}
                   alt={group.images[0].name}
                 />
@@ -28,8 +34,8 @@ export default function GroupList(props: Props) {
                   group.tags.map((t) => t.name).join(", ")}
               </p>
               <p>{group.createdAt.toLocaleString()}</p>
-            </a>
-          </div>
+            </div>
+          </a>
         ))}
       </div>
     </div>
