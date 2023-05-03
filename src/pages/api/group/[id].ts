@@ -29,8 +29,10 @@ export default async function handler(
         },
         groupImages: {
           select: {
+            id: true,
             image: {
               select: {
+                id: true,
                 path: true,
                 name: true,
                 size: true,
@@ -56,6 +58,7 @@ export default async function handler(
         return {
           ...gi.image,
           displayNo: gi.display_no,
+          groupImageId: gi.id,
         };
       }),
     };

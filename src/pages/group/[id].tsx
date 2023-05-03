@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import { GetServerSideProps, NextPage } from "next";
-import { Group } from "@/types";
+import { Group, Image } from "@/types";
 import { PrismaClient } from "@prisma/client";
 
 import GroupInfo from "@/components/GroupInfo";
@@ -47,8 +47,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       },
       groupImages: {
         select: {
+          id: true,
           image: {
             select: {
+              id: true,
               path: true,
               name: true,
               size: true,
@@ -71,6 +73,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       return {
         ...gi.image,
         displayNo: gi.display_no,
+        groupImageId: gi.id,
       };
     }),
   };
@@ -84,12 +87,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 const GroupPage: NextPage<Props> = (props: Props) => {
   const [selectedItem, setSelectedItem] = useState(0);
   const [group, setGroup] = useState<Group>(props.group);
+  const [images, setImages] = useState<Image[]>(props.group.images);
   const fetchGroup = async () => {
     const id = props.group.id;
     try {
       const res = await fetch(`/api/group/${id}`);
       const resj = await res.json();
       setGroup(resj);
+      setImages(resj.images);
       return true;
     } catch (e) {
       return false;
@@ -123,10 +128,27 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     });
     return res.ok;
   };
+  const onOrderUpdate = async (iimages: Image[]) => {
+    const idNoList = iimages.map((image, no) => [image.groupImageId, no]);
+    const res = await fetch(`/api/group/image/order`, {
+      method: "PUT",
+      body: JSON.stringify(idNoList),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const ress = await fetchGroup();
+    return [res.ok, ress];
+  };
   const menuItems = ["グループ詳細", "アップロード/画像リスト"];
   const contents = [
     <GroupInfo key={0} group={group} onSave={updateGroup} />,
-    <GroupImageListUp key={1} onUpload={postImage} images={group.images} />,
+    <GroupImageListUp
+      key={1}
+      onUpload={postImage}
+      images={images}
+      onOrderUpdate={onOrderUpdate}
+    />,
   ];
   return (
     <Layout>

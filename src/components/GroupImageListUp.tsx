@@ -9,6 +9,7 @@ interface Props {
     fileName: string
   ) => Promise<boolean[]>;
   images: IImage[];
+  onOrderUpdate: (imgs: IImage[]) => Promise<boolean[]>;
 }
 
 export default function GroupImageListUp(props: Props) {
@@ -16,7 +17,10 @@ export default function GroupImageListUp(props: Props) {
     <>
       <GroupImageUploader onUpload={props.onUpload} />
       <hr />
-      <GroupImageList images={props.images} />
+      <GroupImageList
+        images={props.images}
+        onOrderUpdate={props.onOrderUpdate}
+      />
     </>
   );
 }

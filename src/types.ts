@@ -8,6 +8,7 @@ export interface Image extends Base {
   name: string;
   size: number;
   displayNo: number;
+  groupImageId: number;
   createdAt: Date;
 }
 export interface Group extends Base {
