@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styles from "@/styles/GroupImageUploader.module.css";
 
 type Props = {
-  onUpload: (file: File, displayNo: number) => Promise<Response>;
+  onUpload: (
+    file: File,
+    displayNo: number,
+    fileName: string
+  ) => Promise<boolean[]>;
 };
 
 const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
@@ -11,6 +15,12 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
   const [displayNo, setDisplayNo] = useState<number>(0);
   const [isBalloon, setIsBalloon] = useState(false);
   const [balloonMessage, setBalloonMessage] = useState("");
+  const [fileName, setFileName] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>();
+
+  const handleFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFileName(event.target.value);
+  };
 
   const handleFileInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -23,18 +33,27 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
       reader.onloadend = () => {
         setPreviewUrl(reader.result as string);
       };
+      setFileName(file.name);
     } else {
       setPreviewUrl(null);
+    }
+  };
+  const clearInput = () => {
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    setFileName("");
+    setDisplayNo(0);
+    if (fileInputRef.current?.value) {
+      fileInputRef.current.value = "";
     }
   };
 
   const handleUploadClick = async () => {
     if (selectedFile) {
-      const res = await onUpload(selectedFile, displayNo);
+      const [isUp] = await onUpload(selectedFile, displayNo, fileName);
       setIsBalloon(true);
-      if (res.ok) {
-        setSelectedFile(null);
-        setPreviewUrl(null);
+      clearInput();
+      if (isUp) {
         setBalloonMessage("アップロードに成功しました。");
       } else {
         setBalloonMessage("アップロードに失敗しました。");
@@ -42,8 +61,7 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
     }
   };
   const handleDeleteClick = () => {
-    setSelectedFile(null);
-    setPreviewUrl(null);
+    clearInput();
   };
   const handleBalloonDeleteClick = () => {
     setIsBalloon(false);
@@ -71,29 +89,43 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
           </button>
         </div>
       )}
-      <label htmlFor="display_no">
+      <label htmlFor="display_no" className={styles.displayNolabel}>
         表示順:
         <input
           type="number"
+          min={0}
           id="display_no"
           name="display_no"
           value={displayNo}
           onChange={(e) => setDisplayNo(parseInt(e.target.value))}
-          className={styles.input}
+          className={styles.displayNo}
         />
       </label>
-      <label htmlFor="file">
+      <label htmlFor="file" className={styles.label}>
         <input
           id="file"
           type="file"
           accept="image/*"
           onChange={handleFileInputChange}
           className={styles.fileInput}
+          ref={fileInputRef}
         />
       </label>
-      <button onClick={handleUploadClick} className={styles.button}>
-        Upload
-      </button>
+      <label htmlFor="fileName" className={styles.label}>
+        ファイル名:
+        <input
+          id="fileName"
+          type="text"
+          onChange={handleFileNameChange}
+          value={fileName}
+          className={styles.input}
+        />
+      </label>
+      <div className={styles.btnLine}>
+        <button onClick={handleUploadClick} className={styles.button}>
+          Upload
+        </button>
+      </div>
     </div>
   );
 };
