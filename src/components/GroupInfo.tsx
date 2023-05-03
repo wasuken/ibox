@@ -4,17 +4,16 @@ import { Group } from "@/types";
 
 type Props = {
   group: Group;
-  onSave: (group: Group) => void;
+  onSave: (group: Group) => Promise<boolean>;
 };
 
 const GroupInfo: React.FC<Props> = ({ group, onSave }) => {
   const [name, setName] = useState(group.name);
   const [description, setDescription] = useState(group.description);
   const [tags, setTags] = useState<string[]>(group.tags ?? []);
-  console.log(group);
 
-  const handleSave = () => {
-    onSave({ ...group, name, description, tags });
+  const handleSave = async () => {
+    await onSave({ ...group, title: name, description, tags });
   };
 
   return (
