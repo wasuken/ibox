@@ -10,6 +10,7 @@ interface Props {
   ) => Promise<boolean[]>;
   images: IImage[];
   onOrderUpdate: (imgs: IImage[]) => Promise<boolean[]>;
+  onImageDelete: (imgs: IImage) => Promise<boolean[]>;
 }
 
 export default function GroupImageListUp(props: Props) {
@@ -20,6 +21,7 @@ export default function GroupImageListUp(props: Props) {
       <GroupImageList
         images={props.images}
         onOrderUpdate={props.onOrderUpdate}
+        onImageDelete={props.onImageDelete}
       />
     </>
   );

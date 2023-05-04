@@ -6,9 +6,14 @@ import { useState, useEffect } from "react";
 type Props = {
   images: IImage[];
   onOrderUpdate: (imgs: IImage[]) => Promise<boolean[]>;
+  onImageDelete: (img: IImage) => Promise<boolean[]>;
 };
 
-const GroupImageList: React.FC<Props> = ({ images: imgs, onOrderUpdate }) => {
+const GroupImageList: React.FC<Props> = ({
+  images: imgs,
+  onOrderUpdate,
+  onImageDelete,
+}) => {
   const [draggedImage, setDraggedImage] = useState<IImage | null>(null);
   const [images, setImages] = useState<IImage[]>(imgs);
 
@@ -41,6 +46,9 @@ const GroupImageList: React.FC<Props> = ({ images: imgs, onOrderUpdate }) => {
   const onOrderUpdateNow = () => {
     onOrderUpdate(images);
   };
+  const handleGroupImageDeleteClick = async (image: IImage) => {
+    await onImageDelete(image);
+  };
   useEffect(() => {
     setImages(imgs);
   }, [imgs]);
@@ -63,6 +71,12 @@ const GroupImageList: React.FC<Props> = ({ images: imgs, onOrderUpdate }) => {
             onDrop={(event) => handleDrop(event, image)}
           >
             <span className={styles.displayNo}>{image.displayNo}</span>
+            <button
+              onClick={() => handleGroupImageDeleteClick(image)}
+              className={styles.deleteButton}
+            >
+              &#x2716;
+            </button>
             <Image
               src={`http://localhost:3000${image.path}`}
               alt={`Group Image ${index + 1}`}

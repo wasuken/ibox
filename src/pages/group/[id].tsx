@@ -140,6 +140,13 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     const ress = await fetchGroup();
     return [res.ok, ress];
   };
+  const onImageDelete = async (img: Image) => {
+    const res = await fetch(`/api/group/image/${img.groupImageId}`, {
+      method: "DELETE",
+    });
+    const ress = await fetchGroup();
+    return [res.ok, ress];
+  };
   const menuItems = ["グループ詳細", "アップロード/画像リスト"];
   const contents = [
     <GroupInfo key={0} group={group} onSave={updateGroup} />,
@@ -148,6 +155,7 @@ const GroupPage: NextPage<Props> = (props: Props) => {
       onUpload={postImage}
       images={images}
       onOrderUpdate={onOrderUpdate}
+      onImageDelete={onImageDelete}
     />,
   ];
   return (
