@@ -24,7 +24,7 @@ export default function Layout({ children }: Props) {
         </div>
         <div>
           <form className={styles["search-form"]}>
-            <input type="text" placeholder="画像を検索" />
+            <input type="text" placeholder="グループを検索" />
             <button type="submit">検索</button>
           </form>
         </div>
