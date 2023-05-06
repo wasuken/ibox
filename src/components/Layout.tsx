@@ -22,12 +22,6 @@ export default function Layout({ children }: Props) {
             create group
           </a>
         </div>
-        <div>
-          <form className={styles["search-form"]}>
-            <input type="text" placeholder="グループを検索" />
-            <button type="submit">検索</button>
-          </form>
-        </div>
         <div className={styles["header-right"]}></div>
       </header>
       <main>{children}</main>

@@ -2,10 +2,10 @@ import styles from "@/styles/Index.module.css";
 import { Tag, SearchParams } from "@/types";
 
 function generateHref(params: SearchParams) {
-  if (params.tagList === undefined) params.tagList = [];
-  if (params.query === undefined) params.query = "";
-  if (params.page === undefined) params.page = 0;
-  const tagp = params.tagList.map((tag) => `tag[]=${tag.name}`).join("&");
+  if (!params.tag) params.tag = "";
+  if (!params.query) params.query = "";
+  if (!params.page) params.page = 0;
+  const tagp = `tag=${params.tag}`;
   const queryp = `query=${params.query}`;
   const pagep = `page=${params.page}`;
   return `?${tagp}&${queryp}&${pagep}`;
@@ -17,9 +17,9 @@ interface Props {
 
 const initParams = () => {
   return {
-    tagList: undefined,
-    query: undefined,
-    page: undefined,
+    tag: "",
+    query: "",
+    page: 0,
   };
 };
 
@@ -30,7 +30,7 @@ export default function TagList(props: Props) {
       <h2>タグ</h2>
       <div className={styles["tag-cloud"]}>
         {tagList.map((tag, i) => (
-          <a key={i} href={generateHref(initParams())}>
+          <a key={i} href={generateHref({ ...initParams(), tag: tag.name })}>
             {tag.name}
           </a>
         ))}

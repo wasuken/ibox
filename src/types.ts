@@ -24,7 +24,7 @@ export interface SearchParams {
   query: string | undefined;
   // タグリスト
   // undefinedなら[]
-  tagList: Tag[] | undefined;
+  tag: string | undefined;
   // ページカーソル
   // undefinedなら0
   page: number | undefined;

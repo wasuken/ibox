@@ -1,7 +1,40 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
+const generateSearchParam = (query: string, tag: string) => {
+  let search: Prisma.GroupFindManyArgs = {};
+  if ((tag && tag.length > 0) || (query && query.length > 0)) {
+    search = {
+      where: {},
+    };
+  }
+  if (search.where && search.where && tag && tag.length > 0) {
+    search.where.groupTags = {
+      some: {
+        tag: {
+          name: tag,
+        },
+      },
+    };
+  }
+  if (search.where && query.length > 0) {
+    search.where.OR = [
+      {
+        title: {
+          contains: query,
+        },
+      },
+      {
+        description: {
+          contains: query,
+        },
+      },
+    ];
+  }
+  return search;
+};
 
 // POST /api/upload に対するハンドラー
 export default async function handler(
@@ -9,7 +42,13 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "GET") {
-    const groups = await prisma.group.findMany({
+    const { query: _query, tag: _tag } = req.query;
+    console.log("debug", _query);
+    const tag = _tag as string;
+    const query = _query as string;
+    const search = generateSearchParam(query, tag);
+    const groupParams = {
+      ...search,
       select: {
         id: true,
         title: true,
@@ -40,7 +79,8 @@ export default async function handler(
           },
         },
       },
-    });
+    };
+    const groups = await prisma.group.findMany(groupParams);
     const jgroups = groups.map((group) => {
       let v = {
         ...JSON.parse(JSON.stringify(group)),
