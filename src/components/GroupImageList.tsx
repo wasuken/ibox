@@ -2,6 +2,7 @@ import styles from "@/styles/GroupImageList.module.css";
 import Image from "next/image";
 import { Image as IImage } from "@/types";
 import { useState, useEffect } from "react";
+import ImagePreviewModal from "@/components/ImagePreviewModal";
 
 type Props = {
   images: IImage[];
@@ -16,6 +17,16 @@ const GroupImageList: React.FC<Props> = ({
 }) => {
   const [draggedImage, setDraggedImage] = useState<IImage | null>(null);
   const [images, setImages] = useState<IImage[]>(imgs);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleDragStart = (
     _event: React.DragEvent<HTMLDivElement>,
@@ -48,6 +59,10 @@ const GroupImageList: React.FC<Props> = ({
   };
   const handleGroupImageDeleteClick = async (image: IImage) => {
     await onImageDelete(image);
+  };
+  const handleImageClick = (no: number) => {
+    setSelectedIndex(no);
+    handleOpenModal();
   };
   useEffect(() => {
     setImages(imgs);
@@ -83,10 +98,18 @@ const GroupImageList: React.FC<Props> = ({
               className={styles.image}
               width={300}
               height={500}
+              onClick={() => handleImageClick(index)}
             />
           </div>
         ))}
       </div>
+      {isModalOpen && (
+        <ImagePreviewModal
+          index={selectedIndex}
+          onClose={handleCloseModal}
+          images={images}
+        />
+      )}
     </div>
   );
 };
