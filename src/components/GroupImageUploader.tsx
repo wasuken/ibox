@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import styles from "@/styles/GroupImageUploader.module.css";
+import Image from "next/image";
 
 type Props = {
   onUpload: (
@@ -83,7 +84,13 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
       <h2>Group Image Uploader</h2>
       {previewUrl && (
         <div className={styles.previewContainer}>
-          <img src={previewUrl} alt="preview" className={styles.preview} />
+          <Image
+            width={500}
+            height={500}
+            src={previewUrl}
+            alt="preview"
+            className={styles.preview}
+          />
           <button onClick={handleDeleteClick} className={styles.deleteButton}>
             &#x2716;
           </button>

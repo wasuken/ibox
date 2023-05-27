@@ -43,7 +43,7 @@ export default async function handler(
 ) {
   if (req.method === "GET") {
     const { query: _query, tag: _tag } = req.query;
-    console.log("debug", _query);
+    // console.log("debug", _query);
     const tag = _tag as string;
     const query = _query as string;
     const search = generateSearchParam(query, tag);

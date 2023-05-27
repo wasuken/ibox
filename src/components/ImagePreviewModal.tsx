@@ -28,7 +28,11 @@ const ImagePreviewModal = ({ images, onClose, index }: Props) => {
     <div className={styles.overlay}>
       <div className={styles.modal}>
         <div className={styles.imageContainer}>
-          <img className={styles.image} src={imagePath} alt="" />
+          <img
+            className={styles.image}
+            src={imagePath}
+            alt={images[currentIndex].name}
+          />
         </div>
         <div className={styles.buttonContainer}>
           <button className={styles.button} onClick={handlePrevClick}>

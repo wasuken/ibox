@@ -46,7 +46,7 @@ export default async function handler(
         try {
           fs.mkdirSync(dirPath, { recursive: true });
         } catch (err) {
-          console.log("exists dir");
+          console.error("exists dir");
         }
 
         fs.copyFile(originPath, newPath, (err) => {
