@@ -16,7 +16,6 @@ export default function Home() {
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(`Search text: ${searchText}`);
   };
   function fetchGroupList() {
     fetch(`/api/groups${location.search}`)
