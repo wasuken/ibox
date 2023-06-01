@@ -127,7 +127,8 @@ const GroupPage: NextPage<Props> = (props: Props) => {
         "Content-Type": "application/json",
       },
     });
-    return res.ok;
+    const ress = await fetchGroup();
+    return [res.ok, ress];
   };
   const onOrderUpdate = async (iimages: Image[]) => {
     const idNoList = iimages.map((image, no) => [image.groupImageId, no]);
