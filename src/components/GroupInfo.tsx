@@ -4,7 +4,7 @@ import { Group } from "@/types";
 
 type Props = {
   group: Group;
-  onSave: (group: Group) => Promise<boolean>;
+  onSave: (group: Group) => Promise<boolean[]>;
 };
 
 const GroupInfo: React.FC<Props> = ({ group, onSave }) => {
