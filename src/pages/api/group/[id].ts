@@ -110,7 +110,9 @@ async function updateGroupTags(groupId: number, newTags: string[]) {
   for (const tagName of tagsToRemove) {
     const tag = await prisma.tag.findFirst({ where: { name: tagName } });
     if (tag) {
-      await prisma.groupTag.delete({ where: { groupId, tagId: tag.id } });
+      await prisma.groupTag.deleteMany({
+        where: { groupId: groupId, tagId: tag.id },
+      });
     }
   }
 
