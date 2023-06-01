@@ -82,6 +82,7 @@ export default async function handler(
     await updateGroupTags(id, tags);
     res.status(200).json({ msg: "success." });
     return;
+  } else if (req.method === "DELETE") {
   } else {
     res.status(400).json({ msg: "not supported" });
     return;

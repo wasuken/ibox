@@ -23,9 +23,17 @@ const ImagePreviewModal = ({ images, onClose, index }: Props) => {
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
   };
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    console.log(e);
+    if (e.key === "ArrowRight") {
+      handleNextClick();
+    } else if (e.key === "ArrowLeft") {
+      handlePrevClick();
+    }
+  };
 
   return (
-    <div className={styles.overlay}>
+    <div className={styles.overlay} onKeyDown={handleKeyPress}>
       <div className={styles.modal}>
         <div className={styles.imageContainer}>
           <img

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "@/styles/GroupImageUploader.module.css";
 import Image from "next/image";
 
@@ -8,9 +8,17 @@ type Props = {
     displayNo: number,
     fileName: string
   ) => Promise<boolean[]>;
+  doUpload: boolean;
+  isMulti: boolean;
+  onClose: () => boolean;
 };
 
-const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
+const GroupImageUploader: React.FC<Props> = ({
+  onUpload,
+  doUpload,
+  isMulti,
+  onClose,
+}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [displayNo, setDisplayNo] = useState<number>(0);
@@ -67,6 +75,11 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
   const handleBalloonDeleteClick = () => {
     setIsBalloon(false);
   };
+  useEffect(() => {
+    if (doUpload) {
+      handleUploadClick().then(() => console.log("upload"));
+    }
+  });
 
   return (
     <div className={styles.container}>
@@ -128,11 +141,18 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
           className={styles.input}
         />
       </label>
-      <div className={styles.btnLine}>
-        <button onClick={handleUploadClick} className={styles.button}>
-          Upload
+      {!isMulti && (
+        <div className={styles.btnLine}>
+          <button onClick={handleUploadClick} className={styles.button}>
+            Upload
+          </button>
+        </div>
+      )}
+      {isMulti && (
+        <button className={styles.closeButton} onClick={onClose}>
+          ×
         </button>
-      </div>
+      )}
     </div>
   );
 };

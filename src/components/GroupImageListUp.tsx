@@ -1,5 +1,6 @@
 import GroupImageList from "@/components/GroupImageList";
 import GroupImageUploader from "@/components/GroupImageUploader";
+import GroupImageMultiUploader from "@/components/GroupImageMultiUploader";
 import { Image as IImage } from "@/types";
 
 interface Props {
@@ -16,8 +17,7 @@ interface Props {
 export default function GroupImageListUp(props: Props) {
   return (
     <>
-      <GroupImageUploader onUpload={props.onUpload} />
-      <hr />
+      <GroupImageMultiUploader onUpload={props.onUpload} />
       <GroupImageList
         images={props.images}
         onOrderUpdate={props.onOrderUpdate}

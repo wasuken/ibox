@@ -28,6 +28,7 @@ export default async function handler(
         },
       });
     });
-    res.status(200).json({});
+    const groupId = group.id;
+    res.status(200).json({ groupId });
   }
 }
