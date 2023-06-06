@@ -24,17 +24,18 @@ const ImagePreviewModal = ({ images, onClose, index }: Props) => {
     );
   };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    console.log(e);
     if (e.key === "ArrowRight") {
       handleNextClick();
     } else if (e.key === "ArrowLeft") {
       handlePrevClick();
+    } else if (e.key === "Escape") {
+      onClose();
     }
   };
 
   return (
-    <div className={styles.overlay} onKeyDown={handleKeyPress}>
-      <div className={styles.modal}>
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={styles.modal} onKeyDown={handleKeyPress}>
         <div className={styles.imageContainer}>
           <img
             className={styles.image}
@@ -43,10 +44,10 @@ const ImagePreviewModal = ({ images, onClose, index }: Props) => {
           />
         </div>
         <div className={styles.buttonContainer}>
-          <button className={styles.button} onClick={handlePrevClick}>
+          <button className={styles.button} onClick={handlePrevClick} autoFocus>
             ＜
           </button>
-          <button className={styles.button} onClick={handleNextClick}>
+          <button className={styles.button} onClick={handleNextClick} autoFocus>
             ＞
           </button>
         </div>
