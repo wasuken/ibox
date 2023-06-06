@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "@/styles/GroupImageCrawler.module.css";
+import Loader from "@/components/Loader";
 
 interface Props {
   groupId: number;
@@ -8,24 +9,28 @@ interface Props {
 
 export default function GroupImageCrawler(props: Props) {
   const groupId = props.groupId;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [url, setURL] = useState<string>("");
   const [css, setCSS] = useState<string>("");
   // const [resultType, setResultType] = useState<string>("");
   const [resultList, setResultList] = useState<string[]>([]);
-  const handleClickPostImageList = async () => {
-    const res = await fetch(`/api/group/uploader`, {
+  const handleClickPostImageList = () => {
+    setIsLoading(true);
+    fetch(`/api/group/uploader`, {
       method: "POST",
       body: JSON.stringify({
         groupId,
         resultList,
       }),
+    }).then((res) => {
+      if (res.ok) {
+        alert("登録成功");
+        props.onUpdate();
+        setIsLoading(false);
+      } else {
+        alert("登録失敗");
+      }
     });
-    if (res.ok) {
-      alert("登録成功");
-      await props.onUpdate();
-    } else {
-      alert("登録失敗");
-    }
   };
   const fetchResult = async () => {
     const res = await fetch(
@@ -50,6 +55,9 @@ export default function GroupImageCrawler(props: Props) {
     nlist.splice(i, 1);
     setResultList(nlist);
   };
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <div className={styles.container}>
       <h2>Image Crawler</h2>
