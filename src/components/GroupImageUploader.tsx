@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import styles from "@/styles/GroupImageUploader.module.css";
 import Image from "next/image";
 
@@ -8,24 +8,16 @@ type Props = {
     displayNo: number,
     fileName: string
   ) => Promise<boolean[]>;
-  doUpload: boolean;
-  isMulti: boolean;
-  onClose: () => boolean;
 };
 
-const GroupImageUploader: React.FC<Props> = ({
-  onUpload,
-  doUpload,
-  isMulti,
-  onClose,
-}) => {
+const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [displayNo, setDisplayNo] = useState<number>(0);
   const [isBalloon, setIsBalloon] = useState(false);
   const [balloonMessage, setBalloonMessage] = useState("");
   const [fileName, setFileName] = useState<string>("");
-  const fileInputRef = useRef<HTMLInputElement>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFileName(event.target.value);
@@ -34,7 +26,7 @@ const GroupImageUploader: React.FC<Props> = ({
   const handleFileInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const file = event.target.files?.[0];
+    const file = event.target.files?.[0] as File;
     setSelectedFile(file);
     if (file) {
       const reader = new FileReader();
@@ -75,11 +67,6 @@ const GroupImageUploader: React.FC<Props> = ({
   const handleBalloonDeleteClick = () => {
     setIsBalloon(false);
   };
-  useEffect(() => {
-    if (doUpload) {
-      handleUploadClick().then(() => console.log("upload"));
-    }
-  });
 
   return (
     <div className={styles.container}>
@@ -141,18 +128,11 @@ const GroupImageUploader: React.FC<Props> = ({
           className={styles.input}
         />
       </label>
-      {!isMulti && (
-        <div className={styles.btnLine}>
-          <button onClick={handleUploadClick} className={styles.button}>
-            Upload
-          </button>
-        </div>
-      )}
-      {isMulti && (
-        <button className={styles.closeButton} onClick={onClose}>
-          ×
+      <div className={styles.btnLine}>
+        <button onClick={handleUploadClick} className={styles.button}>
+          Upload
         </button>
-      )}
+      </div>
     </div>
   );
 };

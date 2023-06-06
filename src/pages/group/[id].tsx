@@ -175,7 +175,7 @@ const GroupPage: NextPage<Props> = (props: Props) => {
       onOrderUpdate={onOrderUpdate}
       onImageDelete={onImageDelete}
     />,
-    <GroupImageCrawler groupId={group.id} key={2} />,
+    <GroupImageCrawler groupId={group.id} key={2} onUpdate={fetchGroup} />,
   ];
   return (
     <Layout>
@@ -193,7 +193,10 @@ const GroupPage: NextPage<Props> = (props: Props) => {
             </div>
           ))}
         </div>
-        <div className={styles.content}>{contents[selectedItem]}</div>
+        <div className={styles.content}>
+          <h2 className={styles.title}>{props.group.name}</h2>
+          {contents[selectedItem]}
+        </div>
       </div>
     </Layout>
   );

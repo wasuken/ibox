@@ -3,6 +3,7 @@ import styles from "@/styles/GroupImageCrawler.module.css";
 
 interface Props {
   groupId: number;
+  onUpdate: () => Promise<boolean>;
 }
 
 export default function GroupImageCrawler(props: Props) {
@@ -21,6 +22,7 @@ export default function GroupImageCrawler(props: Props) {
     });
     if (res.ok) {
       alert("登録成功");
+      await props.onUpdate();
     } else {
       alert("登録失敗");
     }
