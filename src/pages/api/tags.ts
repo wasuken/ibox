@@ -9,7 +9,13 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "GET") {
-    const tags = await prisma.tag.findMany();
+    const tags = await prisma.tag.findMany({
+      where: {
+        groupTags: {
+          some: {},
+        },
+      },
+    });
     res.status(200).json(tags);
   }
 }
