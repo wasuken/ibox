@@ -37,7 +37,7 @@ export default function Home() {
     </button>
   ));
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     const bodyObj = {
       title,
@@ -45,24 +45,21 @@ export default function Home() {
       description,
     };
     const body = JSON.stringify(bodyObj);
-    fetch(`/api/group`, {
+    const res = await fetch(`/api/group`, {
       method: "POST",
       body,
       headers: {
         "Content-Type": "application/json",
       },
-    })
-      .then((res) => res.json())
-      .then((_resj) => {
-        setBalloonMessage("登録完了");
-        setIsBalloon(true);
-        setTitle("");
-        setTags([]);
-        setInputValue("");
-        setDescription("");
-      });
+    });
+    if (res.ok) {
+      const resj = await res.json();
+      const groupId = resj.groupId;
+      router.push(`/group/${groupId}`);
+      return;
+    }
   };
-  const handleBack = (event) => {
+  const handleBack = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     router.replace("/");
   };
