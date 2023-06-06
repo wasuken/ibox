@@ -83,6 +83,42 @@ export default async function handler(
     res.status(200).json({ msg: "success." });
     return;
   } else if (req.method === "DELETE") {
+    const id = parseInt(req.query.id as string);
+    // グループイメージレコード取得
+    const records = await prisma.groupImage.findMany({
+      where: {
+        groupId: id,
+      },
+    });
+    const imageIdList = records.map((x) => x.imageId);
+    // グループイメージ削除
+    await prisma.groupImage.deleteMany({
+      where: {
+        groupId: id,
+      },
+    });
+    // イメージ削除
+    await prisma.image.deleteMany({
+      where: {
+        id: {
+          in: imageIdList,
+        },
+      },
+    });
+    // グループタグ削除 タグは残したまま
+    await prisma.groupTag.deleteMany({
+      where: {
+        groupId: id,
+      },
+    });
+    // グループ削除
+    await prisma.group.delete({
+      where: {
+        id: id,
+      },
+    });
+    res.status(200).json({ msg: "success." });
+    return;
   } else {
     res.status(400).json({ msg: "not supported" });
     return;

@@ -130,6 +130,13 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     const ress = await fetchGroup();
     return [res.ok, ress];
   };
+  const deleteGroup = async (groupId: number) => {
+    const res = await fetch(`/api/group/${groupId}`, {
+      method: "DELETE",
+    });
+    const ress = await fetchGroup();
+    return [res.ok, ress];
+  };
   const onOrderUpdate = async (iimages: Image[]) => {
     const idNoList = iimages.map((image, no) => [image.groupImageId, no]);
     const res = await fetch(`/api/group/image/order`, {
@@ -155,7 +162,12 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     "クローラーツール",
   ];
   const contents = [
-    <GroupInfo key={0} group={group} onSave={updateGroup} />,
+    <GroupInfo
+      key={0}
+      group={group}
+      onSave={updateGroup}
+      onDelete={deleteGroup}
+    />,
     <GroupImageListUp
       key={1}
       onUpload={postImage}

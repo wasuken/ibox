@@ -12,13 +12,18 @@ export default function GroupImageCrawler(props: Props) {
   // const [resultType, setResultType] = useState<string>("");
   const [resultList, setResultList] = useState<string[]>([]);
   const handleClickPostImageList = async () => {
-    fetch(`/api/group/uploader`, {
+    const res = await fetch(`/api/group/uploader`, {
       method: "POST",
       body: JSON.stringify({
         groupId,
         resultList,
       }),
     });
+    if (res.ok) {
+      alert("登録成功");
+    } else {
+      alert("登録失敗");
+    }
   };
   const fetchResult = async () => {
     const res = await fetch(

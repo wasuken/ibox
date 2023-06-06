@@ -1,19 +1,34 @@
 import { useState } from "react";
 import styles from "@/styles/GroupInfo.module.css";
 import { Group } from "@/types";
+import { useRouter } from "next/router";
 
 type Props = {
   group: Group;
   onSave: (group: Group) => Promise<boolean[]>;
+  onDelete: (groupId: number) => Promise<boolean[]>;
 };
 
-const GroupInfo: React.FC<Props> = ({ group, onSave }) => {
+const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
   const [name, setName] = useState(group.name);
   const [description, setDescription] = useState(group.description);
   const [tags, setTags] = useState<string[]>(group.tags ?? []);
+  const router = useRouter();
 
   const handleSave = async () => {
     await onSave({ ...group, title: name, description, tags });
+  };
+  const handleDelete = async () => {
+    const confirm = window.confirm(
+      "本当に削除しますか？画像とか全部消えますよ？"
+    );
+    if (confirm) {
+      await onDelete(group.id);
+      alert("削除を完了しました");
+      router.push("/");
+    } else {
+      alert("削除をキャンセルしました");
+    }
   };
 
   return (
@@ -54,6 +69,9 @@ const GroupInfo: React.FC<Props> = ({ group, onSave }) => {
       <div className={styles.btnLine}>
         <button onClick={handleSave} className={styles.button}>
           Save
+        </button>
+        <button onClick={handleDelete} className={styles.dbutton}>
+          Delete Group
         </button>
       </div>
     </div>
