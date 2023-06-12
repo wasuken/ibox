@@ -1,5 +1,6 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, Group } from "@prisma/client";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { PrismaClient } from "@prisma/client";
+import { logging } from "@/lib/logging";
 
 const prisma = new PrismaClient();
 
@@ -7,122 +8,124 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id: id_ } = req.query;
-  const id = parseInt(id_ as string);
-  if (req.method === "GET") {
-    const group = await prisma.group.findFirst({
-      where: {
-        id,
-      },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        groupTags: {
-          select: {
-            tag: {
-              select: {
-                name: true,
+  logging(req, res, async (req, res) => {
+    const { id: id_ } = req.query;
+    const id = parseInt(id_ as string);
+    if (req.method === "GET") {
+      const group = await prisma.group.findFirst({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          groupTags: {
+            select: {
+              tag: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
-        },
-        groupImages: {
-          select: {
-            id: true,
-            image: {
-              select: {
-                id: true,
-                path: true,
-                name: true,
-                size: true,
+          groupImages: {
+            select: {
+              id: true,
+              image: {
+                select: {
+                  id: true,
+                  path: true,
+                  name: true,
+                  size: true,
+                },
               },
+              display_no: true,
             },
-            display_no: true,
-          },
-          orderBy: {
-            display_no: "asc",
+            orderBy: {
+              display_no: "asc",
+            },
           },
         },
-      },
-    });
-    if (!group) {
-      res.status(400).json({ msg: "empty group" });
+      });
+      if (!group) {
+        res.status(400).json({ msg: "empty group" });
+        return;
+      }
+      const jgroup = {
+        ...JSON.parse(JSON.stringify(group)),
+        name: group.title,
+        tags: group.groupTags.map((t) => t.tag.name),
+        images: group?.groupImages.map((gi) => {
+          return {
+            ...gi.image,
+            displayNo: gi.display_no,
+            groupImageId: gi.id,
+          };
+        }),
+      };
+      res.status(200).json(jgroup);
+      return;
+    } else if (req.method === "PUT") {
+      const group = req.body;
+      const id = parseInt(group.id as string);
+      const title = group.title as string;
+      const description = group.description as string;
+      const tags = group.tags as string[];
+      await prisma.group.update({
+        where: {
+          id,
+        },
+        data: {
+          title,
+          description,
+        },
+      });
+      await updateGroupTags(id, tags);
+      res.status(200).json({ msg: "success." });
+      return;
+    } else if (req.method === "DELETE") {
+      const id = parseInt(req.query.id as string);
+      // グループイメージレコード取得
+      const records = await prisma.groupImage.findMany({
+        where: {
+          groupId: id,
+        },
+      });
+      const imageIdList = records.map((x) => x.imageId);
+      // グループイメージ削除
+      await prisma.groupImage.deleteMany({
+        where: {
+          groupId: id,
+        },
+      });
+      // イメージ削除
+      await prisma.image.deleteMany({
+        where: {
+          id: {
+            in: imageIdList,
+          },
+        },
+      });
+      // グループタグ削除 タグは残したまま
+      await prisma.groupTag.deleteMany({
+        where: {
+          groupId: id,
+        },
+      });
+      // グループ削除
+      await prisma.group.delete({
+        where: {
+          id: id,
+        },
+      });
+      res.status(200).json({ msg: "success." });
+      return;
+    } else {
+      res.status(400).json({ msg: "not supported" });
       return;
     }
-    const jgroup = {
-      ...JSON.parse(JSON.stringify(group)),
-      name: group.title,
-      tags: group.groupTags.map((t) => t.tag.name),
-      images: group?.groupImages.map((gi) => {
-        return {
-          ...gi.image,
-          displayNo: gi.display_no,
-          groupImageId: gi.id,
-        };
-      }),
-    };
-    res.status(200).json(jgroup);
-    return;
-  } else if (req.method === "PUT") {
-    const group = req.body;
-    const id = parseInt(group.id as string);
-    const title = group.title as string;
-    const description = group.description as string;
-    const tags = group.tags as string[];
-    await prisma.group.update({
-      where: {
-        id,
-      },
-      data: {
-        title,
-        description,
-      },
-    });
-    await updateGroupTags(id, tags);
-    res.status(200).json({ msg: "success." });
-    return;
-  } else if (req.method === "DELETE") {
-    const id = parseInt(req.query.id as string);
-    // グループイメージレコード取得
-    const records = await prisma.groupImage.findMany({
-      where: {
-        groupId: id,
-      },
-    });
-    const imageIdList = records.map((x) => x.imageId);
-    // グループイメージ削除
-    await prisma.groupImage.deleteMany({
-      where: {
-        groupId: id,
-      },
-    });
-    // イメージ削除
-    await prisma.image.deleteMany({
-      where: {
-        id: {
-          in: imageIdList,
-        },
-      },
-    });
-    // グループタグ削除 タグは残したまま
-    await prisma.groupTag.deleteMany({
-      where: {
-        groupId: id,
-      },
-    });
-    // グループ削除
-    await prisma.group.delete({
-      where: {
-        id: id,
-      },
-    });
-    res.status(200).json({ msg: "success." });
-    return;
-  } else {
-    res.status(400).json({ msg: "not supported" });
-    return;
-  }
+  });
 }
 async function updateGroupTags(groupId: number, newTags: string[]) {
   // グループの現在のタグを取得
