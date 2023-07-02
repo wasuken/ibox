@@ -4,7 +4,10 @@ import { Group, Image } from "@/types";
 import { PrismaClient } from "@prisma/client";
 
 import GroupInfo from "@/components/GroupInfo";
-import GroupImageListUp from "@/components/GroupImageListUp";
+// import GroupImageListUp from "@/components/GroupImageListUp";
+import GroupImageList from "@/components/GroupImageList";
+import GroupImageUploader from "@/components/GroupImageUploader";
+import GroupImageMultiUploader from "@/components/GroupImageMultiUploader";
 import GroupImageCrawler from "@/components/GroupImageCrawler";
 import styles from "@/styles/GroupDetail.module.css";
 
@@ -158,7 +161,8 @@ const GroupPage: NextPage<Props> = (props: Props) => {
   };
   const menuItems = [
     "グループ詳細",
-    "アップロード/画像リスト",
+    "アップロード",
+    "画像リスト",
     "クローラーツール",
   ];
   const contents = [
@@ -168,14 +172,14 @@ const GroupPage: NextPage<Props> = (props: Props) => {
       onSave={updateGroup}
       onDelete={deleteGroup}
     />,
-    <GroupImageListUp
-      key={1}
-      onUpload={postImage}
+    <GroupImageMultiUploader key={1} onUpload={postImage} />,
+    <GroupImageList
+      key={2}
       images={images}
       onOrderUpdate={onOrderUpdate}
       onImageDelete={onImageDelete}
     />,
-    <GroupImageCrawler groupId={group.id} key={2} onUpdate={fetchGroup} />,
+    <GroupImageCrawler groupId={group.id} key={3} onUpdate={fetchGroup} />,
   ];
   return (
     <Layout>

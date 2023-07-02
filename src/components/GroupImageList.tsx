@@ -70,11 +70,13 @@ const GroupImageList: React.FC<Props> = ({
   return (
     <div className={styles.container}>
       <h2>Group Image List</h2>
-      <div className={styles.optionLine}>
-        <button onClick={onOrderUpdateNow} className={styles.button}>
-          現在の並びで表示番号を更新する
-        </button>
-      </div>
+      {images.length > 0 && (
+        <div className={styles.optionLine}>
+          <button onClick={onOrderUpdateNow} className={styles.button}>
+            現在の並びで表示番号を更新する
+          </button>
+        </div>
+      )}
       <div className={styles.list}>
         {(images ?? []).map((image, index) => (
           <div
