@@ -181,22 +181,44 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     />,
     <GroupImageCrawler groupId={group.id} key={3} onUpdate={fetchGroup} />,
   ];
+  const [menuToggle, setMenuToggle] = useState<boolean>(false);
+  const handleMenuToggle = () => {
+    setMenuToggle(!menuToggle);
+  };
   return (
     <Layout>
       <div className={styles.panel}>
-        <div className={styles.menu}>
-          {menuItems.map((item, index) => (
-            <div
-              key={index}
-              className={`${styles.menuItem} ${
-                index === selectedItem ? styles.active : ""
-              }`}
-              onClick={() => setSelectedItem(index)}
+        {!menuToggle && (
+          <button
+            type="button"
+            className={styles.menuClose}
+            onClick={handleMenuToggle}
+          >
+            {">>"}
+          </button>
+        )}
+        {menuToggle && (
+          <div className={styles.menu}>
+            <button
+              type="button"
+              className={styles.menuClose}
+              onClick={handleMenuToggle}
             >
-              {item}
-            </div>
-          ))}
-        </div>
+              {"<<"}
+            </button>
+            {menuItems.map((item, index) => (
+              <div
+                key={index}
+                className={`${styles.menuItem} ${
+                  index === selectedItem ? styles.active : ""
+                }`}
+                onClick={() => setSelectedItem(index)}
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        )}
         <div className={styles.content}>
           <h2 className={styles.title}>{props.group.name}</h2>
           {contents[selectedItem]}

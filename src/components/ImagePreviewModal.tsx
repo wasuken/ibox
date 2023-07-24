@@ -47,7 +47,14 @@ const ImagePreviewModal = ({ images, onClose, index }: Props) => {
           <button className={styles.button} onClick={handlePrevClick} autoFocus>
             ＜
           </button>
-          <button className={styles.button} onClick={handleNextClick} autoFocus>
+          <button
+            className={styles.button}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              e.stopPropagation();
+              handleNextClick();
+            }}
+            autoFocus
+          >
             ＞
           </button>
         </div>
