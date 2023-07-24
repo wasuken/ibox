@@ -51,9 +51,7 @@ const ImagePreviewModal = ({ images, onClose, index }: Props) => {
               handlePrevClick();
             }}
             autoFocus
-          >
-            ＜
-          </button>
+          ></button>
           <button
             className={styles.button}
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -61,9 +59,7 @@ const ImagePreviewModal = ({ images, onClose, index }: Props) => {
               handleNextClick();
             }}
             autoFocus
-          >
-            ＞
-          </button>
+          ></button>
         </div>
         <button className={styles.closeButton} onClick={onClose}>
           ×
