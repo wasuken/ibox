@@ -121,7 +121,7 @@ export default function GroupImageCrawler(props: Props) {
             >
               x
             </button>
-            <img src={x} />
+            <img src={x} className={styles.image} />
           </div>
         ))}
       </div>

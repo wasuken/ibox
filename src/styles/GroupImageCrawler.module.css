@@ -5,6 +5,11 @@
   align-items: center;
 }
 
+.image {
+  max-width: 400px;
+  max-height: 400px;
+}
+
 .label {
   display: block;
   margin-bottom: 2rem;
