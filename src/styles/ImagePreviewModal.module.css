@@ -17,7 +17,7 @@
   min-height: 500px;
   width: 70vw;
   max-height: 90vh;
-  overflow: hidden;
+  overflow: scroll;
   display: flex;
   flex-direction: column;
 }
