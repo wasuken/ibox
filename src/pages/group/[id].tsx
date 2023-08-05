@@ -189,11 +189,7 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     <Layout>
       <div className={styles.panel}>
         {!menuToggle && (
-          <button
-            type="button"
-            className={styles.menuClose}
-            onClick={handleMenuToggle}
-          >
+          <button onClick={handleMenuToggle} className={styles.toggleButton}>
             {">>"}
           </button>
         )}
@@ -201,7 +197,7 @@ const GroupPage: NextPage<Props> = (props: Props) => {
           <div className={styles.menu}>
             <button
               type="button"
-              className={styles.menuClose}
+              className={styles.toggleButton}
               onClick={handleMenuToggle}
             >
               {"<<"}
