@@ -18,14 +18,24 @@ export default async function handler(
         },
       });
       tags.forEach(async (tag: string) => {
-        const resultTag = await prisma.tag.create({
-          data: {
-            name: tag,
-          },
-        });
+        const findOrCreate = async () => {
+          const resultExistsTag = await prisma.tag.findFirst({
+            where: {
+              name: tag,
+            },
+          });
+          if (resultExistsTag) {
+            return resultExistsTag;
+          }
+          return await prisma.tag.create({
+            data: {
+              name: tag,
+            },
+          });
+        };
         await prisma.groupTag.create({
           data: {
-            tagId: resultTag.id,
+            tagId: (await findOrCreate()).id,
             groupId: group.id,
           },
         });
