@@ -39,9 +39,14 @@ export default function Home() {
 
   const handleSubmit = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
+    let ttags = [...tags];
+    if (inputValue.trim()) {
+      ttags = Array.from(new Set([...tags, inputValue.trim()]));
+      setInputValue("");
+    }
     const bodyObj = {
       title,
-      tags,
+      tags: ttags,
       description,
     };
     const body = JSON.stringify(bodyObj);
