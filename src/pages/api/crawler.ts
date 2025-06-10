@@ -1,27 +1,24 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import * as cheerio from "cheerio";
-import fetch from "node-fetch";
-import { logging } from "@/lib/logging";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import * as cheerio from 'cheerio';
+import fetch from 'node-fetch';
+import { logging } from '@/lib/logging';
 
 function convPathToURL(baseurl: string, path: string) {
-  if (path.startsWith("http")) {
+  if (path.startsWith('http')) {
     return path;
   }
-  let conj = "";
-  if (path.startsWith("/")) {
-    conj = "";
+  let conj = '';
+  if (path.startsWith('/')) {
+    conj = '';
   } else {
-    conj = "/";
+    conj = '/';
   }
   return `${baseurl}${conj}${path}`;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   logging(req, res, async (req, res) => {
-    if (req.method === "GET") {
+    if (req.method === 'GET') {
       const { css: _css, url: _url } = req.query;
       const css = _css as string;
       const url = _url as string;
@@ -30,21 +27,21 @@ export default async function handler(
       const body = await response.text();
       const $ = cheerio.load(body);
       let result: string[] = [];
-      const sp = css.split(" ");
+      const sp = css.split(' ');
       const lcmd = sp.pop();
       console.log(lcmd);
       $(css).each((_, e) => {
-        if (lcmd === "a") {
-          console.log("debug", $(e).attr().href);
+        if (lcmd === 'a') {
+          console.log('debug', $(e).attr().href);
           const link = convPathToURL(uurl.origin, $(e).attr().href);
           result.push(link);
-        } else if (lcmd === "img") {
+        } else if (lcmd === 'img') {
           const link = convPathToURL(uurl.origin, $(e).attr().src);
           result.push(link);
         }
       });
-      console.log("debug", result);
-      res.status(200).json({ result, type: "img" });
+      console.log('debug', result);
+      res.status(200).json({ result, type: 'img' });
       return;
     }
   });

@@ -1,15 +1,12 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, Tag } from "@prisma/client";
-import { logging } from "@/lib/logging";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { PrismaClient, Tag } from '@prisma/client';
+import { logging } from '@/lib/logging';
 
 const prisma = new PrismaClient();
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   logging(req, res, async (req, res) => {
-    if (req.method === "POST") {
+    if (req.method === 'POST') {
       const { title, tags, description } = req.body;
       const group = await prisma.group.create({
         data: {

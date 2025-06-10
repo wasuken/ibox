@@ -1,23 +1,18 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import * as cheerio from "cheerio";
-import fetch from "node-fetch";
-import { v4 as uuidv4 } from "uuid";
-import { logging } from "@/lib/logging";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import * as cheerio from 'cheerio';
+import fetch from 'node-fetch';
+import { v4 as uuidv4 } from 'uuid';
+import { logging } from '@/lib/logging';
 
-import { PrismaClient } from "@prisma/client";
-import fs from "fs";
-import path from "path";
+import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
 const prisma = new PrismaClient();
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   logging(req, res, async (req, res) => {
-    if (req.method === "POST") {
-      const { resultList: _resultList, groupId: _groupId } = JSON.parse(
-        req.body
-      );
+    if (req.method === 'POST') {
+      const { resultList: _resultList, groupId: _groupId } = JSON.parse(req.body);
       const resultList = _resultList as string[];
       const groupId = _groupId as string;
       // resultListループ
@@ -27,18 +22,18 @@ export default async function handler(
       //   4. GroupImageとして登録
       for (let i = 0; i < resultList.length; i++) {
         const url = resultList[i];
-        const newDir = "./public/uploads";
-        const name = url.split("/").pop();
+        const newDir = './public/uploads';
+        const name = url.split('/').pop();
         const fname = `${uuidv4()}_${name}`;
         // グループIDごとに画像を作成する。
         const newPath = path.join(newDir, groupId.toString(), fname);
-        const webPath = path.join("/uploads", groupId.toString(), fname);
+        const webPath = path.join('/uploads', groupId.toString(), fname);
 
-        const dirPath = newPath.replace(/\/[^/]*$/, "");
+        const dirPath = newPath.replace(/\/[^/]*$/, '');
         try {
           fs.mkdirSync(dirPath, { recursive: true });
         } catch (err) {
-          console.error("exists dir");
+          console.error('exists dir');
         }
         try {
           const response = await fetch(url);
@@ -63,8 +58,8 @@ export default async function handler(
           console.error(error);
         }
       }
-      console.log("info", "uploaded");
-      res.status(200).json({ msg: "success" });
+      console.log('info', 'uploaded');
+      res.status(200).json({ msg: 'success' });
       return;
     }
   });

@@ -1,5 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -20,18 +20,18 @@ export async function logging(
   const method = req.method;
   const path = req.url;
   const ipAddress = req.socket.remoteAddress;
-  const userAgent = req.headers["user-agent"];
+  const userAgent = req.headers['user-agent'];
   const rawHeaders = JSON.stringify(req.headers);
 
   // ログ情報をデータベースに保存
   await prisma.accessLog.create({
     data: {
-      method: method ?? "",
+      method: method ?? '',
       path: path,
       statusCode: res.statusCode,
       responseTime: responseTime,
-      ipAddress: ipAddress ?? "",
-      userAgent: userAgent ?? "",
+      ipAddress: ipAddress ?? '',
+      userAgent: userAgent ?? '',
       rawHeaders: rawHeaders,
     },
   });

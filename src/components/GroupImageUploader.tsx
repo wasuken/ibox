@@ -1,13 +1,9 @@
-import { useState, useRef } from "react";
-import styles from "@/styles/GroupImageUploader.module.css";
-import Image from "next/image";
+import { useState, useRef } from 'react';
+import styles from '@/styles/GroupImageUploader.module.css';
+import Image from 'next/image';
 
 type Props = {
-  onUpload: (
-    file: File,
-    displayNo: number,
-    fileName: string
-  ) => Promise<boolean[]>;
+  onUpload: (file: File, displayNo: number, fileName: string) => Promise<boolean[]>;
 };
 
 const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
@@ -15,17 +11,15 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [displayNo, setDisplayNo] = useState<number>(0);
   const [isBalloon, setIsBalloon] = useState(false);
-  const [balloonMessage, setBalloonMessage] = useState("");
-  const [fileName, setFileName] = useState<string>("");
+  const [balloonMessage, setBalloonMessage] = useState('');
+  const [fileName, setFileName] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFileName(event.target.value);
   };
 
-  const handleFileInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] as File;
     setSelectedFile(file);
     if (file) {
@@ -42,10 +36,10 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
   const clearInput = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
-    setFileName("");
+    setFileName('');
     setDisplayNo(0);
     if (fileInputRef.current?.value) {
-      fileInputRef.current.value = "";
+      fileInputRef.current.value = '';
     }
   };
 
@@ -55,9 +49,9 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
       setIsBalloon(true);
       clearInput();
       if (isUp) {
-        setBalloonMessage("アップロードに成功しました。");
+        setBalloonMessage('アップロードに成功しました。');
       } else {
-        setBalloonMessage("アップロードに失敗しました。");
+        setBalloonMessage('アップロードに失敗しました。');
       }
     }
   };
@@ -73,10 +67,7 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
       {isBalloon && (
         <div className={styles.balloonContainer}>
           <div className={styles.message}>{balloonMessage}</div>
-          <button
-            onClick={handleBalloonDeleteClick}
-            className={styles.balloonDeleteButton}
-          >
+          <button onClick={handleBalloonDeleteClick} className={styles.balloonDeleteButton}>
             &#x2716;
           </button>
         </div>
@@ -104,7 +95,7 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
           id="display_no"
           name="display_no"
           value={displayNo}
-          onChange={(e) => setDisplayNo(parseInt(e.target.value))}
+          onChange={e => setDisplayNo(parseInt(e.target.value))}
           className={styles.displayNo}
         />
       </label>

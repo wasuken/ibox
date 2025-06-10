@@ -1,14 +1,14 @@
-import React from "react";
-import { render } from "@testing-library/react";
-import GroupList from "@/components/GroupList";
-import { Tag, Image, Group } from "@/types";
+import React from 'react';
+import { render } from '@testing-library/react';
+import GroupList from '@/components/GroupList';
+import { Tag, Image, Group } from '@/types';
 
-test("グループが表示されるか", () => {
+test('グループが表示されるか', () => {
   const images: Image[] = [
     {
       id: 1,
-      name: "hoge.png",
-      path: "/uploads/1/test.png",
+      name: 'hoge.png',
+      path: '/uploads/1/test.png',
       size: 100,
       displayNo: 1,
       groupImageId: 1,
@@ -18,15 +18,15 @@ test("グループが表示されるか", () => {
   const tags: Tag[] = [
     {
       id: 1,
-      name: "tagtest",
+      name: 'tagtest',
     },
   ];
   const dt = new Date();
   const groups: Group[] = [
     {
       id: 1,
-      name: "GroupListテスト",
-      description: "test description",
+      name: 'GroupListテスト',
+      description: 'test description',
       tags,
       images,
       createdAt: dt,

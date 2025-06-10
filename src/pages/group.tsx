@@ -1,38 +1,34 @@
-import React, { useState } from "react";
-import { useRouter } from "next/router";
-import Layout from "@/components/Layout";
+import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import Layout from '@/components/Layout';
 
-import styles from "@/styles/Group.module.css";
+import styles from '@/styles/Group.module.css';
 
 export default function Home() {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [tags, setTags] = useState([]);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
   const [isBalloon, setIsBalloon] = useState(false);
-  const [balloonMessage, setBalloonMessage] = useState("");
+  const [balloonMessage, setBalloonMessage] = useState('');
 
-  const handleInputKeyDown = (event) => {
-    if (event.key === "Enter" || event.key === ",") {
+  const handleInputKeyDown = event => {
+    if (event.key === 'Enter' || event.key === ',') {
       event.preventDefault();
       if (inputValue.trim()) {
         setTags(Array.from(new Set([...tags, inputValue.trim()])));
-        setInputValue("");
+        setInputValue('');
       }
     }
   };
 
-  const handleTagClick = (tag) => {
-    setTags(tags.filter((t) => t !== tag));
+  const handleTagClick = tag => {
+    setTags(tags.filter(t => t !== tag));
   };
 
   const tagButtons = tags.map((tag, index) => (
-    <button
-      className={styles.tagButton}
-      key={index}
-      onClick={() => handleTagClick(tag)}
-    >
+    <button className={styles.tagButton} key={index} onClick={() => handleTagClick(tag)}>
       {tag}
     </button>
   ));
@@ -42,7 +38,7 @@ export default function Home() {
     let ttags = [...tags];
     if (inputValue.trim()) {
       ttags = Array.from(new Set([...tags, inputValue.trim()]));
-      setInputValue("");
+      setInputValue('');
     }
     const bodyObj = {
       title,
@@ -51,10 +47,10 @@ export default function Home() {
     };
     const body = JSON.stringify(bodyObj);
     const res = await fetch(`/api/group`, {
-      method: "POST",
+      method: 'POST',
       body,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
     if (res.ok) {
@@ -66,7 +62,7 @@ export default function Home() {
   };
   const handleBack = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    router.replace("/");
+    router.replace('/');
   };
   const handleDeleteClick = () => {
     setIsBalloon(false);
@@ -89,7 +85,7 @@ export default function Home() {
             className={styles.input}
             type="text"
             value={title}
-            onChange={(event) => setTitle(event.target.value)}
+            onChange={event => setTitle(event.target.value)}
             placeholder="タイトルを入力してください"
             required
           />
@@ -102,7 +98,7 @@ export default function Home() {
               className={styles.input}
               type="text"
               value={inputValue}
-              onChange={(event) => setInputValue(event.target.value)}
+              onChange={event => setInputValue(event.target.value)}
               onKeyDown={handleInputKeyDown}
               placeholder="タグを追加 (カンマ区切り)"
             />
@@ -114,18 +110,14 @@ export default function Home() {
           <textarea
             className={styles.textarea}
             value={description}
-            onChange={(event) => setDescription(event.target.value)}
+            onChange={event => setDescription(event.target.value)}
             placeholder="ファイルの説明を入力してください"
             required
           />
         </label>
 
         <div className={styles.btnline}>
-          <button
-            className={styles.button}
-            type="button"
-            onClick={handleSubmit}
-          >
+          <button className={styles.button} type="button" onClick={handleSubmit}>
             登録
           </button>
           <button className={styles.button} type="button" onClick={handleBack}>

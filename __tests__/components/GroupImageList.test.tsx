@@ -1,14 +1,14 @@
-import React from "react";
-import { render } from "@testing-library/react";
-import GroupImageList from "@/components/GroupImageList";
-import { Image } from "@/types";
+import React from 'react';
+import { render } from '@testing-library/react';
+import GroupImageList from '@/components/GroupImageList';
+import { Image } from '@/types';
 
-test("画像が表示されるか", () => {
+test('画像が表示されるか', () => {
   const images: Image[] = [
     {
       id: 1,
-      name: "hoge.png",
-      path: "/uploads/1/test.png",
+      name: 'hoge.png',
+      path: '/uploads/1/test.png',
       size: 100,
       displayNo: 1,
       groupImageId: 1,
@@ -22,11 +22,7 @@ test("画像が表示されるか", () => {
     return [true];
   };
   const { getByText, getByAltText } = render(
-    <GroupImageList
-      images={images}
-      onOrderUpdate={onOrderUpdate}
-      onImageDelete={onImageDelete}
-    />
+    <GroupImageList images={images} onOrderUpdate={onOrderUpdate} onImageDelete={onImageDelete} />
   );
   const btnElm = getByText(/現在の並びで表示番号を更新する/i);
   expect(btnElm).toBeInTheDocument();

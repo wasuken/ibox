@@ -1,16 +1,13 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, Prisma } from "@prisma/client";
-import { logging } from "@/lib/logging";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { PrismaClient, Prisma } from '@prisma/client';
+import { logging } from '@/lib/logging';
 
 const prisma = new PrismaClient();
 
 // POST /api/upload に対するハンドラー
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   logging(req, res, async (req, res) => {
-    if (req.method === "GET") {
+    if (req.method === 'GET') {
       const { query: _query, tag: _tag } = req.query;
       // console.log("debug", _query);
       const tag = _tag as string;
@@ -44,18 +41,18 @@ export default async function handler(
               display_no: true,
             },
             orderBy: {
-              display_no: "asc",
+              display_no: 'asc',
             },
           },
         },
       };
       const groups = await prisma.group.findMany(groupParams);
-      const jgroups = groups.map((group) => {
+      const jgroups = groups.map(group => {
         let v = {
           ...JSON.parse(JSON.stringify(group)),
           name: group.title,
-          tags: group.groupTags.map((t) => t.tag),
-          images: group?.groupImages.map((gi) => {
+          tags: group.groupTags.map(t => t.tag),
+          images: group?.groupImages.map(gi => {
             return {
               ...gi.image,
               displayNo: gi.display_no,

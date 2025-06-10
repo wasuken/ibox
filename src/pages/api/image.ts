@@ -1,7 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
-import formidable from "formidable";
-import { logging } from "@/lib/logging";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { PrismaClient } from '@prisma/client';
+import formidable from 'formidable';
+import { logging } from '@/lib/logging';
 
 const prisma = new PrismaClient();
 
@@ -12,12 +12,9 @@ export const config = {
 };
 
 // POST /api/upload に対するハンドラー
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   logging(req, res, async (req, res) => {
-    if (req.method === "POST") {
+    if (req.method === 'POST') {
       const form = new formidable.IncomingForm();
 
       form.parse(req, async function (err, fields, files) {
@@ -30,7 +27,7 @@ export default async function handler(
         }
         const file = files.image as formidable.File;
         const path = file.filepath;
-        const name = file.originalFilename ?? "";
+        const name = file.originalFilename ?? '';
         const size = file.size;
         let tags = fields.tags;
         if (tags as string[]) {

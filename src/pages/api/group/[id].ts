@@ -1,17 +1,14 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
-import { logging } from "@/lib/logging";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { PrismaClient } from '@prisma/client';
+import { logging } from '@/lib/logging';
 
 const prisma = new PrismaClient();
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   logging(req, res, async (req, res) => {
     const { id: id_ } = req.query;
     const id = parseInt(id_ as string);
-    if (req.method === "GET") {
+    if (req.method === 'GET') {
       const group = await prisma.group.findFirst({
         where: {
           id,
@@ -43,20 +40,20 @@ export default async function handler(
               display_no: true,
             },
             orderBy: {
-              display_no: "asc",
+              display_no: 'asc',
             },
           },
         },
       });
       if (!group) {
-        res.status(400).json({ msg: "empty group" });
+        res.status(400).json({ msg: 'empty group' });
         return;
       }
       const jgroup = {
         ...JSON.parse(JSON.stringify(group)),
         name: group.title,
-        tags: group.groupTags.map((t) => t.tag.name),
-        images: group?.groupImages.map((gi) => {
+        tags: group.groupTags.map(t => t.tag.name),
+        images: group?.groupImages.map(gi => {
           return {
             ...gi.image,
             displayNo: gi.display_no,
@@ -66,7 +63,7 @@ export default async function handler(
       };
       res.status(200).json(jgroup);
       return;
-    } else if (req.method === "PUT") {
+    } else if (req.method === 'PUT') {
       const group = req.body;
       const id = parseInt(group.id as string);
       const title = group.title as string;
@@ -82,9 +79,9 @@ export default async function handler(
         },
       });
       await updateGroupTags(id, tags);
-      res.status(200).json({ msg: "success." });
+      res.status(200).json({ msg: 'success.' });
       return;
-    } else if (req.method === "DELETE") {
+    } else if (req.method === 'DELETE') {
       const id = parseInt(req.query.id as string);
       // グループイメージレコード取得
       const records = await prisma.groupImage.findMany({
@@ -92,7 +89,7 @@ export default async function handler(
           groupId: id,
         },
       });
-      const imageIdList = records.map((x) => x.imageId);
+      const imageIdList = records.map(x => x.imageId);
       // グループイメージ削除
       await prisma.groupImage.deleteMany({
         where: {
@@ -119,10 +116,10 @@ export default async function handler(
           id: id,
         },
       });
-      res.status(200).json({ msg: "success." });
+      res.status(200).json({ msg: 'success.' });
       return;
     } else {
-      res.status(400).json({ msg: "not supported" });
+      res.status(400).json({ msg: 'not supported' });
       return;
     }
   });
@@ -135,15 +132,13 @@ async function updateGroupTags(groupId: number, newTags: string[]) {
   });
 
   // 現在のタグ名の配列を取得
-  const currentTags = currentGroupTags.map((groupTag) => groupTag.tag.name);
+  const currentTags = currentGroupTags.map(groupTag => groupTag.tag.name);
 
   // 削除するタグを特定
-  const tagsToRemove = currentTags.filter(
-    (tagName) => !newTags.includes(tagName)
-  );
+  const tagsToRemove = currentTags.filter(tagName => !newTags.includes(tagName));
 
   // 追加するタグを特定
-  const tagsToAdd = newTags.filter((tagName) => !currentTags.includes(tagName));
+  const tagsToAdd = newTags.filter(tagName => !currentTags.includes(tagName));
 
   // グループから削除するタグを取り除く
   for (const tagName of tagsToRemove) {

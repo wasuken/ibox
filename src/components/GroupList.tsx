@@ -1,45 +1,83 @@
-import styles from "@/styles/Index.module.css";
-import NextImage from "next/image";
-import { Group } from "@/types";
+import {
+  Box,
+  Heading,
+  SimpleGrid,
+  Text,
+  Image,
+  Flex,
+  Link,
+  Badge,
+  LinkBox,
+  LinkOverlay,
+} from '@chakra-ui/react';
+import NextImage from 'next/image';
+import NextLink from 'next/link';
+import { Group } from '@/types';
 
 interface Props {
   groupList: Group[];
 }
 
-export default function GroupList(props: Props) {
-  const { groupList } = props;
+export default function GroupList({ groupList }: Props) {
   return (
-    <div className={styles["group-area"]}>
-      <h2>グループ</h2>
-      <div className={styles["group-list"]}>
-        {groupList.map((group, i) => (
-          <div key={i} className={styles["group-item"]}>
-            <div>
-              {group.images?.length > 0 && (
-                <NextImage
-                  width={500}
-                  height={500}
+    <Box py={4} px={6}>
+      <Heading as="h2" size="lg" mb={4}>
+        グループ
+      </Heading>
+      <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
+        {groupList.map(group => (
+          <LinkBox
+            key={group.id}
+            borderWidth="1px"
+            borderRadius="lg"
+            overflow="hidden"
+            _hover={{
+              shadow: 'md',
+              transform: 'translateY(-2px)',
+              transition: 'all 0.2s ease-in-out',
+            }}
+          >
+            <Box position="relative" height="200px">
+              {group.images?.length > 0 ? (
+                <Box
+                  as="img"
                   src={group.images[0].path}
-                  alt={group.images[0].name}
+                  alt={group.images[0].name || 'グループ画像'}
+                  width="100%"
+                  height="100%"
+                  objectFit="cover"
                 />
+              ) : (
+                <Flex height="100%" bg="gray.200" alignItems="center" justifyContent="center">
+                  <Text color="gray.500">No Image</Text>
+                </Flex>
               )}
-              <h3>
-                <a href={`/group/${group.id}`}>{group.name}</a>
-              </h3>
-              <p>
-                {group.tags &&
-                  group.tags.length >= 0 &&
-                  group.tags.map((t, i) => (
-                    <a key={i} href={`/?tag=${t.name}&page=0&query=`}>
-                      {t.name}
-                    </a>
+            </Box>
+
+            <Box p={4}>
+              <Heading as="h3" size="md" mb={2}>
+                <LinkOverlay as={NextLink} href={`/group/${group.id}`}>
+                  {group.name}
+                </LinkOverlay>
+              </Heading>
+
+              {group.tags && group.tags.length > 0 && (
+                <Flex gap={2} flexWrap="wrap" mb={2}>
+                  {group.tags.map((tag, i) => (
+                    <Link key={i} as={NextLink} href={`/?tag=${tag.name}&page=0&query=`}>
+                      <Badge colorScheme="blue">{tag.name}</Badge>
+                    </Link>
                   ))}
-              </p>
-              <p>{group.createdAt.toLocaleString()}</p>
-            </div>
-          </div>
+                </Flex>
+              )}
+
+              <Text fontSize="sm" color="gray.500">
+                {new Date(group.createdAt).toLocaleString()}
+              </Text>
+            </Box>
+          </LinkBox>
         ))}
-      </div>
-    </div>
+      </SimpleGrid>
+    </Box>
   );
 }

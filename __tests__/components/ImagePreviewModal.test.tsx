@@ -1,14 +1,14 @@
-import React from "react";
-import { render } from "@testing-library/react";
-import ImagePreviewModal from "@/components/ImagePreviewModal";
-import { Tag, Image, Group } from "@/types";
+import React from 'react';
+import { render } from '@testing-library/react';
+import ImagePreviewModal from '@/components/ImagePreviewModal';
+import { Tag, Image, Group } from '@/types';
 
-test("モーダルが表示されるか", () => {
+test('モーダルが表示されるか', () => {
   const images: Image[] = [
     {
       id: 1,
-      name: "hoge.png",
-      path: "/uploads/1/test.png",
+      name: 'hoge.png',
+      path: '/uploads/1/test.png',
       size: 100,
       displayNo: 1,
       groupImageId: 1,

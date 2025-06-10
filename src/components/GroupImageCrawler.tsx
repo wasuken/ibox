@@ -1,6 +1,6 @@
-import { useState } from "react";
-import styles from "@/styles/GroupImageCrawler.module.css";
-import Loader from "@/components/Loader";
+import { useState } from 'react';
+import styles from '@/styles/GroupImageCrawler.module.css';
+import Loader from '@/components/Loader';
 
 interface Props {
   groupId: number;
@@ -10,33 +10,31 @@ interface Props {
 export default function GroupImageCrawler(props: Props) {
   const groupId = props.groupId;
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [url, setURL] = useState<string>("");
-  const [css, setCSS] = useState<string>("");
+  const [url, setURL] = useState<string>('');
+  const [css, setCSS] = useState<string>('');
   // const [resultType, setResultType] = useState<string>("");
   const [resultList, setResultList] = useState<string[]>([]);
   const handleClickPostImageList = () => {
     setIsLoading(true);
     fetch(`/api/group/uploader`, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
         groupId,
         resultList,
       }),
-    }).then((res) => {
+    }).then(res => {
       if (res.ok) {
-        alert("登録成功");
+        alert('登録成功');
         props.onUpdate();
         setIsLoading(false);
       } else {
-        alert("登録失敗");
+        alert('登録失敗');
       }
     });
   };
   const fetchResult = async () => {
     const res = await fetch(
-      `/api/crawler?url=${encodeURIComponent(url)}&css=${encodeURIComponent(
-        css
-      )}`
+      `/api/crawler?url=${encodeURIComponent(url)}&css=${encodeURIComponent(css)}`
     );
     const resj = await res.json();
     setResultList(resj.result);
@@ -48,7 +46,7 @@ export default function GroupImageCrawler(props: Props) {
     setCSS(e.target.value);
   };
   const handleFetchClick = () => {
-    fetchResult().then(() => console.log("info", "success"));
+    fetchResult().then(() => console.log('info', 'success'));
   };
   const handleDeleteClick = (i: number) => {
     let nlist = [...resultList];
@@ -87,35 +85,27 @@ export default function GroupImageCrawler(props: Props) {
       </label>
       {resultList.length > 0 && (
         <div className={styles.btnLine}>
-          <button
-            type="button"
-            onClick={handleClickPostImageList}
-            className={styles.button}
-          >
+          <button type="button" onClick={handleClickPostImageList} className={styles.button}>
             表示されてる画像をこのグループにアップロード
           </button>
         </div>
       )}
       <div className={styles.btnLine}>
-        <button
-          type="button"
-          onClick={handleFetchClick}
-          className={styles.button}
-        >
+        <button type="button" onClick={handleFetchClick} className={styles.button}>
           画像を取得
         </button>
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", marginTop: "20px" }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '20px' }}>
         {resultList.map((x, key) => (
-          <div key={key} style={{ position: "relative" }}>
+          <div key={key} style={{ position: 'relative' }}>
             <button
               style={{
-                position: "absolute",
-                top: "10px",
-                left: "10px",
-                width: "30px",
-                height: "30px",
-                padding: "0px",
+                position: 'absolute',
+                top: '10px',
+                left: '10px',
+                width: '30px',
+                height: '30px',
+                padding: '0px',
               }}
               onClick={() => handleDeleteClick(key)}
             >
