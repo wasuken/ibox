@@ -27,7 +27,7 @@ export async function logging(
   await prisma.accessLog.create({
     data: {
       method: method ?? '',
-      path: path,
+      path: path ?? '',
       statusCode: res.statusCode,
       responseTime: responseTime,
       ipAddress: ipAddress ?? '',

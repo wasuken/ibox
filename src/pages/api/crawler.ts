@@ -35,15 +35,20 @@ export default async function handler(
       console.log(lcmd)
       $(css).each((_, e) => {
         if (lcmd === 'a') {
-          console.log('debug', $(e).attr().href)
-          const link = convPathToURL(uurl.origin, $(e).attr().href)
-          result.push(link)
+          const href = $(e).attr()?.href
+          if (href) {
+            const link = convPathToURL(uurl.origin, href)
+            result.push(link)
+          }
         } else if (lcmd === 'img') {
-          const link = convPathToURL(uurl.origin, $(e).attr().src)
-          result.push(link)
+          const src = $(e).attr()?.src
+          if (src) {
+            const link = convPathToURL(uurl.origin, src)
+            result.push(link)
+          }
         }
       })
-      console.log('debug', result)
+      // console.log('debug', result)
       res.status(200).json({ result, type: 'img' })
       return
     }

@@ -36,6 +36,7 @@ export default function Home() {
         const jss = js.map((o: any) => ({
           ...o,
           createdAt: new Date(o.createdAt),
+          tags: o.tags.map((x: Tag) => x.name),
         }))
         setGroupList(jss)
       })
@@ -50,6 +51,7 @@ export default function Home() {
         const jss = js.map((o: any) => ({
           ...o,
           createdAt: new Date(o.createdAt),
+          tags: o.tags.map((x: Tag) => x.name),
         }))
         setGroupList(jss)
       })

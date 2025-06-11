@@ -13,7 +13,7 @@ export interface Image extends Base {
 }
 export interface Group extends Base {
   description: string
-  tags: Tag[]
+  tags: string[]
   images: Image[]
   createdAt: Date
 }

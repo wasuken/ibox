@@ -40,20 +40,20 @@ const GroupImageList: React.FC<Props> = ({
   }
 
   const handleDragStart = (
-    event: React.DragEvent<HTMLDivElement>,
+    event: React.DragEvent<HTMLElement>,
     image: IImage,
   ) => {
     setDraggedImage(image)
     event.dataTransfer.effectAllowed = 'move'
   }
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (event: React.DragEvent<HTMLElement>) => {
     event.preventDefault()
     event.dataTransfer.dropEffect = 'move'
   }
 
   const handleDrop = (
-    event: React.DragEvent<HTMLDivElement>,
+    event: React.DragEvent<HTMLElement>,
     targetImage: IImage,
   ) => {
     event.preventDefault()
@@ -143,6 +143,7 @@ const GroupImageList: React.FC<Props> = ({
           {images.map((image, index) => (
             <Col key={image.id} xs={12} sm={6} md={4} lg={3}>
               <Card
+                as="div"
                 className="h-100 position-relative"
                 draggable={true}
                 onDragStart={(event) => handleDragStart(event, image)}

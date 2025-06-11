@@ -29,7 +29,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 const GroupUploader: NextPage<Props> = (props: Props) => {
   return (
     <Layout>
-      <GroupImageCrawler groupId={props.groupId} />
+      <GroupImageCrawler
+        groupId={props.groupId}
+        onUpdate={async () => {
+          return true
+        }}
+      />
     </Layout>
   )
 }

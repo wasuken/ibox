@@ -31,7 +31,7 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
   const handleSave = async () => {
     setIsLoading(true)
     try {
-      await onSave({ ...group, title: name, description, tags })
+      await onSave({ ...group, name, description, tags })
       setShowSuccess(true)
       setTimeout(() => setShowSuccess(false), 3000)
     } finally {

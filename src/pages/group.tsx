@@ -8,12 +8,13 @@ export default function Home() {
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [tags, setTags] = useState([])
+  const [tags, setTags] = useState<string[]>([]) // 型を追加
   const [inputValue, setInputValue] = useState('')
   const [isBalloon, setIsBalloon] = useState(false)
   const [balloonMessage, setBalloonMessage] = useState('')
 
-  const handleInputKeyDown = (event) => {
+  // キーボードイベントの型を追加
+  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' || event.key === ',') {
       event.preventDefault()
       if (inputValue.trim()) {
@@ -23,7 +24,8 @@ export default function Home() {
     }
   }
 
-  const handleTagClick = (tag) => {
+  // タグクリックの型を追加
+  const handleTagClick = (tag: string) => {
     setTags(tags.filter((t) => t !== tag))
   }
 
@@ -64,11 +66,15 @@ export default function Home() {
       return
     }
   }
+
   const handleBack = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
     router.replace('/')
   }
-  const handleDeleteClick = () => {
+
+  // クリックイベントの型を追加
+  const handleDeleteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
     setIsBalloon(false)
   }
 

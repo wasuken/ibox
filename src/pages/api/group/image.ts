@@ -14,6 +14,13 @@ export const config = {
   },
 }
 
+function getFirstValue(
+  value: string | string[] | undefined,
+): string | undefined {
+  if (!value) return undefined
+  return Array.isArray(value) ? value[0] : value
+}
+
 // POST /api/upload に対するハンドラー
 export default async function handler(
   req: NextApiRequest,
@@ -32,14 +39,32 @@ export default async function handler(
             })
             return
           }
-          const file = files.image as formidable.File
+          const fileData = files.image
+          if (!fileData) {
+            return res.status(400).json({ error: 'No image file provided' })
+          }
+
+          const file = Array.isArray(fileData) ? fileData[0] : fileData
+          if (!file || !file.size) {
+            return res.status(400).json({ error: 'Invalid file data' })
+          }
+
           const size = file.size
-          const displayNo = fields.displayNo as string
-          const groupId = fields.groupId as string
+          const displayNo = getFirstValue(fields.displayNo)
+          const groupId = getFirstValue(fields.groupId)
 
           const originPath = file.filepath
           const newDir = './public/uploads'
-          const name = fields.name as string
+          const name = getFirstValue(fields.name)
+
+          if (!displayNo || !groupId || name) {
+            return res
+              .status(400)
+              .json({
+                error: 'Missing required fields: displayNo or groupId or name',
+              })
+          }
+
           const fname = `${uuidv4()}_${name}`
           // グループIDごとに画像を作成する。
           const newPath = path.join(newDir, groupId, fname)

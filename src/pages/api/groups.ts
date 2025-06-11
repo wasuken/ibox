@@ -12,10 +12,10 @@ export default async function handler(
   logging(req, res, async (req, res) => {
     if (req.method === 'GET') {
       const { query: _query, tag: _tag } = req.query
-      // console.log("debug", _query);
       const tag = _tag as string
       const query = _query as string
       const search = generateSearchParam(query, tag)
+
       const groupParams = {
         ...search,
         select: {
@@ -44,28 +44,35 @@ export default async function handler(
               display_no: true,
             },
             orderBy: {
-              display_no: 'asc',
+              display_no: Prisma.SortOrder.asc, // ここを修正
             },
           },
         },
       }
+
       const groups = await prisma.group.findMany(groupParams)
-      const jgroups = groups.map((group) => {
-        let v = {
-          ...JSON.parse(JSON.stringify(group)),
-          name: group.title,
-          tags: group.groupTags.map((t) => t.tag),
-          images: group?.groupImages.map((gi) => {
-            return {
-              ...gi.image,
-              displayNo: gi.display_no,
+      // 以下は同じ
+      const jgroups = groups
+        .map((group) => {
+          if (group !== null) {
+            let v = {
+              ...JSON.parse(JSON.stringify(group)),
+              name: group.title,
+              tags: group.groupTags.map((t) => t.tag),
+              images: group?.groupImages.map((gi) => {
+                return {
+                  ...gi.image,
+                  displayNo: gi.display_no,
+                }
+              }),
             }
-          }),
-        }
-        delete v.groupImages
-        delete v.groupTags
-        return v
-      })
+            delete v.groupImages
+            delete v.groupTags
+            return v
+          }
+          return null
+        })
+        .filter((x) => x !== null)
       res.status(200).json(jgroups)
     }
   })

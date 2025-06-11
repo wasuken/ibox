@@ -83,7 +83,7 @@ export default function GroupList(props: Props) {
                             className="me-1 tag-item"
                             style={{ fontSize: '0.7rem' }}
                           >
-                            {tag.name}
+                            {tag}
                           </Badge>
                         ))}
                         {group.tags.length > 2 && (
