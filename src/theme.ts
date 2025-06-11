@@ -1,10 +1,10 @@
-import { Theme, ThemeConfig } from '@chakra-ui/react';
+import { ThemeConfig } from '@chakra-ui/react'
 
 // カラーモードの設定
 const config: ThemeConfig = {
   initialColorMode: 'light',
   useSystemColorMode: false,
-};
+}
 
 // テーマの拡張
 const theme = extendTheme({
@@ -39,6 +39,6 @@ const theme = extendTheme({
       },
     },
   },
-});
+})
 
-export default theme;
+export default theme

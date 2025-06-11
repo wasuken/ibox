@@ -1,72 +1,72 @@
-import styles from "@/styles/GroupImageList.module.css";
-import Image from "next/image";
-import { Image as IImage } from "@/types";
-import { useState, useEffect } from "react";
-import ImagePreviewModal from "@/components/ImagePreviewModal";
+import ImagePreviewModal from '@/components/ImagePreviewModal'
+import styles from '@/styles/GroupImageList.module.css'
+import { Image as IImage } from '@/types'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
 type Props = {
-  images: IImage[];
-  onOrderUpdate: (imgs: IImage[]) => Promise<boolean[]>;
-  onImageDelete: (img: IImage) => Promise<boolean[]>;
-};
+  images: IImage[]
+  onOrderUpdate: (imgs: IImage[]) => Promise<boolean[]>
+  onImageDelete: (img: IImage) => Promise<boolean[]>
+}
 
 const GroupImageList: React.FC<Props> = ({
   images: imgs,
   onOrderUpdate,
   onImageDelete,
 }) => {
-  const [draggedImage, setDraggedImage] = useState<IImage | null>(null);
-  const [images, setImages] = useState<IImage[]>(imgs);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [draggedImage, setDraggedImage] = useState<IImage | null>(null)
+  const [images, setImages] = useState<IImage[]>(imgs)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [selectedIndex, setSelectedIndex] = useState<number>(0)
 
   const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
+    setIsModalOpen(true)
+  }
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
 
   const handleDragStart = (
     _event: React.DragEvent<HTMLDivElement>,
-    image: IImage
+    image: IImage,
   ) => {
-    setDraggedImage(image);
-  };
+    setDraggedImage(image)
+  }
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
+    event.preventDefault()
+  }
 
   const handleDrop = (
     event: React.DragEvent<HTMLDivElement>,
-    targetImage: IImage
+    targetImage: IImage,
   ) => {
-    event.preventDefault();
-    const dimg = draggedImage as IImage;
-    const draggedIndex = images.indexOf(dimg);
-    const targetIndex = images.indexOf(targetImage);
+    event.preventDefault()
+    const dimg = draggedImage as IImage
+    const draggedIndex = images.indexOf(dimg)
+    const targetIndex = images.indexOf(targetImage)
     if (draggedIndex !== -1 && targetIndex !== -1) {
-      const newImages = [...images];
-      newImages.splice(draggedIndex, 1);
-      newImages.splice(targetIndex, 0, dimg);
-      setImages(newImages);
+      const newImages = [...images]
+      newImages.splice(draggedIndex, 1)
+      newImages.splice(targetIndex, 0, dimg)
+      setImages(newImages)
     }
-  };
+  }
   const onOrderUpdateNow = () => {
-    onOrderUpdate(images);
-  };
+    onOrderUpdate(images)
+  }
   const handleGroupImageDeleteClick = async (image: IImage) => {
-    await onImageDelete(image);
-  };
+    await onImageDelete(image)
+  }
   const handleImageClick = (no: number) => {
-    setSelectedIndex(no);
-    handleOpenModal();
-  };
+    setSelectedIndex(no)
+    handleOpenModal()
+  }
   useEffect(() => {
-    setImages(imgs);
-  }, [imgs]);
+    setImages(imgs)
+  }, [imgs])
   return (
     <div className={styles.container}>
       <h2>Group Image List</h2>
@@ -113,7 +113,7 @@ const GroupImageList: React.FC<Props> = ({
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default GroupImageList;
+export default GroupImageList

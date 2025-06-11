@@ -1,35 +1,35 @@
-import { useState } from "react";
-import styles from "@/styles/GroupInfo.module.css";
-import { Group } from "@/types";
-import { useRouter } from "next/router";
+import styles from '@/styles/GroupInfo.module.css'
+import { Group } from '@/types'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 type Props = {
-  group: Group;
-  onSave: (group: Group) => Promise<boolean[]>;
-  onDelete: (groupId: number) => Promise<boolean[]>;
-};
+  group: Group
+  onSave: (group: Group) => Promise<boolean[]>
+  onDelete: (groupId: number) => Promise<boolean[]>
+}
 
 const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
-  const [name, setName] = useState(group.name);
-  const [description, setDescription] = useState(group.description);
-  const [tags, setTags] = useState<string[]>(group.tags ?? []);
-  const router = useRouter();
+  const [name, setName] = useState(group.name)
+  const [description, setDescription] = useState(group.description)
+  const [tags, setTags] = useState<string[]>(group.tags ?? [])
+  const router = useRouter()
 
   const handleSave = async () => {
-    await onSave({ ...group, title: name, description, tags });
-  };
+    await onSave({ ...group, title: name, description, tags })
+  }
   const handleDelete = async () => {
     const confirm = window.confirm(
-      "本当に削除しますか？画像とか全部消えますよ？"
-    );
+      '本当に削除しますか？画像とか全部消えますよ？',
+    )
     if (confirm) {
-      await onDelete(group.id);
-      alert("削除を完了しました");
-      router.push("/");
+      await onDelete(group.id)
+      alert('削除を完了しました')
+      router.push('/')
     } else {
-      alert("削除をキャンセルしました");
+      alert('削除をキャンセルしました')
     }
-  };
+  }
 
   return (
     <div className={styles.container}>
@@ -61,8 +61,8 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
           type="text"
           id="tags"
           name="tags"
-          value={tags.join(",")}
-          onChange={(e) => setTags(e.target.value.split(","))}
+          value={tags.join(',')}
+          onChange={(e) => setTags(e.target.value.split(','))}
           className={styles.input}
         />
       </label>
@@ -75,7 +75,7 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default GroupInfo;
+export default GroupInfo

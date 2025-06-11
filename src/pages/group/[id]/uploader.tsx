@@ -1,36 +1,36 @@
-import Layout from "@/components/Layout";
-import GroupImageCrawler from "@/components/GroupImageCrawler";
-import { GetServerSideProps, NextPage } from "next";
+import GroupImageCrawler from '@/components/GroupImageCrawler'
+import Layout from '@/components/Layout'
+import { GetServerSideProps, NextPage } from 'next'
 
 interface Props {
-  groupId: number;
+  groupId: number
 }
 
 const emptyResponse = {
   props: {
     groupId: -1,
   },
-};
+}
 
 export const getServerSideProps: GetServerSideProps<Props> = async (
-  context
+  context,
 ) => {
-  const { id } = context.query;
-  if (typeof id !== "string") {
-    return emptyResponse;
+  const { id } = context.query
+  if (typeof id !== 'string') {
+    return emptyResponse
   }
   return {
     props: {
       groupId: parseInt(id),
     },
-  };
-};
+  }
+}
 
 const GroupUploader: NextPage<Props> = (props: Props) => {
   return (
     <Layout>
       <GroupImageCrawler groupId={props.groupId} />
     </Layout>
-  );
-};
-export default GroupUploader;
+  )
+}
+export default GroupUploader

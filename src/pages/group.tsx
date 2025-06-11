@@ -1,31 +1,31 @@
-import React, { useState } from "react";
-import { useRouter } from "next/router";
-import Layout from "@/components/Layout";
+import Layout from '@/components/Layout'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
 
-import styles from "@/styles/Group.module.css";
+import styles from '@/styles/Group.module.css'
 
 export default function Home() {
-  const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [tags, setTags] = useState([]);
-  const [inputValue, setInputValue] = useState("");
-  const [isBalloon, setIsBalloon] = useState(false);
-  const [balloonMessage, setBalloonMessage] = useState("");
+  const router = useRouter()
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [tags, setTags] = useState([])
+  const [inputValue, setInputValue] = useState('')
+  const [isBalloon, setIsBalloon] = useState(false)
+  const [balloonMessage, setBalloonMessage] = useState('')
 
   const handleInputKeyDown = (event) => {
-    if (event.key === "Enter" || event.key === ",") {
-      event.preventDefault();
+    if (event.key === 'Enter' || event.key === ',') {
+      event.preventDefault()
       if (inputValue.trim()) {
-        setTags(Array.from(new Set([...tags, inputValue.trim()])));
-        setInputValue("");
+        setTags(Array.from(new Set([...tags, inputValue.trim()])))
+        setInputValue('')
       }
     }
-  };
+  }
 
   const handleTagClick = (tag) => {
-    setTags(tags.filter((t) => t !== tag));
-  };
+    setTags(tags.filter((t) => t !== tag))
+  }
 
   const tagButtons = tags.map((tag, index) => (
     <button
@@ -35,42 +35,42 @@ export default function Home() {
     >
       {tag}
     </button>
-  ));
+  ))
 
   const handleSubmit = async (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    let ttags = [...tags];
+    event.preventDefault()
+    let ttags = [...tags]
     if (inputValue.trim()) {
-      ttags = Array.from(new Set([...tags, inputValue.trim()]));
-      setInputValue("");
+      ttags = Array.from(new Set([...tags, inputValue.trim()]))
+      setInputValue('')
     }
     const bodyObj = {
       title,
       tags: ttags,
       description,
-    };
-    const body = JSON.stringify(bodyObj);
+    }
+    const body = JSON.stringify(bodyObj)
     const res = await fetch(`/api/group`, {
-      method: "POST",
+      method: 'POST',
       body,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-    });
+    })
     if (res.ok) {
-      const resj = await res.json();
-      const groupId = resj.groupId;
-      router.push(`/group/${groupId}`);
-      return;
+      const resj = await res.json()
+      const groupId = resj.groupId
+      router.push(`/group/${groupId}`)
+      return
     }
-  };
+  }
   const handleBack = async (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    router.replace("/");
-  };
+    event.preventDefault()
+    router.replace('/')
+  }
   const handleDeleteClick = () => {
-    setIsBalloon(false);
-  };
+    setIsBalloon(false)
+  }
 
   return (
     <Layout>
@@ -134,5 +134,5 @@ export default function Home() {
         </div>
       </form>
     </Layout>
-  );
+  )
 }

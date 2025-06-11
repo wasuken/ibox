@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "fmt": "prettier . --write"
   },
   "dependencies": {
     "@babel/runtime": "^7.27.6",
@@ -34,6 +35,9 @@
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
     "@types/uuid": "^10.0.0",
+    "eslint-config-prettier": "^10.1.5",
+    "prettier": "^3.5.3",
+    "prettier-plugin-organize-imports": "^4.1.0",
     "prisma": "^4.15.0"
   }
 }

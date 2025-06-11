@@ -1,72 +1,72 @@
-import { useState, useRef } from "react";
-import styles from "@/styles/GroupImageUploader.module.css";
-import Image from "next/image";
+import styles from '@/styles/GroupImageUploader.module.css'
+import Image from 'next/image'
+import { useRef, useState } from 'react'
 
 type Props = {
   onUpload: (
     file: File,
     displayNo: number,
-    fileName: string
-  ) => Promise<boolean[]>;
-};
+    fileName: string,
+  ) => Promise<boolean[]>
+}
 
 const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [displayNo, setDisplayNo] = useState<number>(0);
-  const [isBalloon, setIsBalloon] = useState(false);
-  const [balloonMessage, setBalloonMessage] = useState("");
-  const [fileName, setFileName] = useState<string>("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [displayNo, setDisplayNo] = useState<number>(0)
+  const [isBalloon, setIsBalloon] = useState(false)
+  const [balloonMessage, setBalloonMessage] = useState('')
+  const [fileName, setFileName] = useState<string>('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFileName(event.target.value);
-  };
+    setFileName(event.target.value)
+  }
 
   const handleFileInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const file = event.target.files?.[0] as File;
-    setSelectedFile(file);
+    const file = event.target.files?.[0] as File
+    setSelectedFile(file)
     if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
       reader.onloadend = () => {
-        setPreviewUrl(reader.result as string);
-      };
-      setFileName(file.name);
+        setPreviewUrl(reader.result as string)
+      }
+      setFileName(file.name)
     } else {
-      setPreviewUrl(null);
+      setPreviewUrl(null)
     }
-  };
+  }
   const clearInput = () => {
-    setSelectedFile(null);
-    setPreviewUrl(null);
-    setFileName("");
-    setDisplayNo(0);
+    setSelectedFile(null)
+    setPreviewUrl(null)
+    setFileName('')
+    setDisplayNo(0)
     if (fileInputRef.current?.value) {
-      fileInputRef.current.value = "";
+      fileInputRef.current.value = ''
     }
-  };
+  }
 
   const handleUploadClick = async () => {
     if (selectedFile) {
-      const [isUp] = await onUpload(selectedFile, displayNo, fileName);
-      setIsBalloon(true);
-      clearInput();
+      const [isUp] = await onUpload(selectedFile, displayNo, fileName)
+      setIsBalloon(true)
+      clearInput()
       if (isUp) {
-        setBalloonMessage("アップロードに成功しました。");
+        setBalloonMessage('アップロードに成功しました。')
       } else {
-        setBalloonMessage("アップロードに失敗しました。");
+        setBalloonMessage('アップロードに失敗しました。')
       }
     }
-  };
+  }
   const handleDeleteClick = () => {
-    clearInput();
-  };
+    clearInput()
+  }
   const handleBalloonDeleteClick = () => {
-    setIsBalloon(false);
-  };
+    setIsBalloon(false)
+  }
 
   return (
     <div className={styles.container}>
@@ -134,7 +134,7 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default GroupImageUploader;
+export default GroupImageUploader

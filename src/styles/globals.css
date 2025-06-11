@@ -21,12 +21,21 @@ body {
   color: var(--bs-text-white) !important;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   min-height: 100vh;
 }
 
 /* 全体的な文字色の強制 */
-h1, h2, h3, h4, h5, h6, p, div, span, a {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+div,
+span,
+a {
   color: var(--bs-text-white) !important;
 }
 
@@ -304,19 +313,29 @@ footer {
 }
 
 /* 背景が暗い場所での文字を確実に白にする */
-.bg-dark, .bg-secondary, .card, .modal-content, .navbar {
+.bg-dark,
+.bg-secondary,
+.card,
+.modal-content,
+.navbar {
   color: var(--bs-text-white) !important;
 }
 
-.bg-dark *, .bg-secondary *, .card *, .modal-content *, .navbar * {
+.bg-dark *,
+.bg-secondary *,
+.card *,
+.modal-content *,
+.navbar * {
   color: var(--bs-text-white) !important;
 }
 
 /* ただしボタンとバッジは除外 */
-.btn, .badge {
+.btn,
+.badge {
   color: inherit !important;
 }
 
-.btn *, .badge * {
+.btn *,
+.badge * {
   color: inherit !important;
 }

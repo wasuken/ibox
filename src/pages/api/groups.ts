@@ -1,21 +1,21 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, Prisma } from "@prisma/client";
-import { logging } from "@/lib/logging";
+import { logging } from '@/lib/logging'
+import { Prisma, PrismaClient } from '@prisma/client'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 // POST /api/upload に対するハンドラー
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   logging(req, res, async (req, res) => {
-    if (req.method === "GET") {
-      const { query: _query, tag: _tag } = req.query;
+    if (req.method === 'GET') {
+      const { query: _query, tag: _tag } = req.query
       // console.log("debug", _query);
-      const tag = _tag as string;
-      const query = _query as string;
-      const search = generateSearchParam(query, tag);
+      const tag = _tag as string
+      const query = _query as string
+      const search = generateSearchParam(query, tag)
       const groupParams = {
         ...search,
         select: {
@@ -44,12 +44,12 @@ export default async function handler(
               display_no: true,
             },
             orderBy: {
-              display_no: "asc",
+              display_no: 'asc',
             },
           },
         },
-      };
-      const groups = await prisma.group.findMany(groupParams);
+      }
+      const groups = await prisma.group.findMany(groupParams)
       const jgroups = groups.map((group) => {
         let v = {
           ...JSON.parse(JSON.stringify(group)),
@@ -59,24 +59,24 @@ export default async function handler(
             return {
               ...gi.image,
               displayNo: gi.display_no,
-            };
+            }
           }),
-        };
-        delete v.groupImages;
-        delete v.groupTags;
-        return v;
-      });
-      res.status(200).json(jgroups);
+        }
+        delete v.groupImages
+        delete v.groupTags
+        return v
+      })
+      res.status(200).json(jgroups)
     }
-  });
+  })
 }
 
 const generateSearchParam = (query: string, tag: string) => {
-  let search: Prisma.GroupFindManyArgs = {};
+  let search: Prisma.GroupFindManyArgs = {}
   if ((tag && tag.length > 0) || (query && query.length > 0)) {
     search = {
       where: {},
-    };
+    }
   }
   if (search.where && search.where && tag && tag.length > 0) {
     search.where.groupTags = {
@@ -85,7 +85,7 @@ const generateSearchParam = (query: string, tag: string) => {
           name: tag,
         },
       },
-    };
+    }
   }
   if (search.where && query.length > 0) {
     search.where.OR = [
@@ -99,7 +99,7 @@ const generateSearchParam = (query: string, tag: string) => {
           contains: query,
         },
       },
-    ];
+    ]
   }
-  return search;
-};
+  return search
+}

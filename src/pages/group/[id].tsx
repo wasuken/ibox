@@ -1,36 +1,35 @@
-import Layout from "@/components/Layout";
-import { GetServerSideProps, NextPage } from "next";
-import { Group, Image } from "@/types";
-import { PrismaClient } from "@prisma/client";
+import Layout from '@/components/Layout'
+import { Group, Image } from '@/types'
+import { PrismaClient } from '@prisma/client'
+import { GetServerSideProps, NextPage } from 'next'
 
-import GroupInfo from "@/components/GroupInfo";
+import GroupInfo from '@/components/GroupInfo'
 // import GroupImageListUp from "@/components/GroupImageListUp";
-import GroupImageList from "@/components/GroupImageList";
-import GroupImageUploader from "@/components/GroupImageUploader";
-import GroupImageMultiUploader from "@/components/GroupImageMultiUploader";
-import GroupImageCrawler from "@/components/GroupImageCrawler";
-import styles from "@/styles/GroupDetail.module.css";
+import GroupImageCrawler from '@/components/GroupImageCrawler'
+import GroupImageList from '@/components/GroupImageList'
+import GroupImageMultiUploader from '@/components/GroupImageMultiUploader'
+import styles from '@/styles/GroupDetail.module.css'
 
-import { useState } from "react";
+import { useState } from 'react'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 type Props = {
-  group: Group;
-};
+  group: Group
+}
 
 const emptyResponse = {
   props: {
     group: {},
   },
-};
+}
 
 export const getServerSideProps: GetServerSideProps<Props> = async (
-  context
+  context,
 ) => {
-  const { id } = context.query;
-  if (typeof id !== "string") {
-    return emptyResponse;
+  const { id } = context.query
+  if (typeof id !== 'string') {
+    return emptyResponse
   }
   const group = await prisma.group.findFirst({
     where: {
@@ -63,12 +62,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
           display_no: true,
         },
         orderBy: {
-          display_no: "asc",
+          display_no: 'asc',
         },
       },
     },
-  });
-  if (!group) return emptyResponse;
+  })
+  if (!group) return emptyResponse
   const jgroup = {
     ...JSON.parse(JSON.stringify(group)),
     name: group.title,
@@ -78,93 +77,93 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
         ...gi.image,
         displayNo: gi.display_no,
         groupImageId: gi.id,
-      };
+      }
     }),
-  };
+  }
   return {
     props: {
       group: jgroup,
     },
-  };
-};
+  }
+}
 
 const GroupPage: NextPage<Props> = (props: Props) => {
-  const [selectedItem, setSelectedItem] = useState(0);
-  const [group, setGroup] = useState<Group>(props.group);
-  const [images, setImages] = useState<Image[]>(props.group.images);
+  const [selectedItem, setSelectedItem] = useState(0)
+  const [group, setGroup] = useState<Group>(props.group)
+  const [images, setImages] = useState<Image[]>(props.group.images)
   const fetchGroup = async () => {
-    const id = props.group.id;
+    const id = props.group.id
     try {
-      const res = await fetch(`/api/group/${id}`);
-      const resj = await res.json();
-      setGroup(resj);
-      setImages(resj.images);
-      return true;
+      const res = await fetch(`/api/group/${id}`)
+      const resj = await res.json()
+      setGroup(resj)
+      setImages(resj.images)
+      return true
     } catch (e) {
-      return false;
+      return false
     }
-  };
+  }
   const postImage = async (
     imageFile: File,
     displayNo: number,
-    fileName: string
+    fileName: string,
   ) => {
-    const formData = new FormData();
-    formData.set("image", imageFile);
-    formData.set("name", fileName);
-    formData.set("size", imageFile.size.toString());
-    formData.set("displayNo", displayNo.toString());
-    formData.set("groupId", group.id.toString());
+    const formData = new FormData()
+    formData.set('image', imageFile)
+    formData.set('name', fileName)
+    formData.set('size', imageFile.size.toString())
+    formData.set('displayNo', displayNo.toString())
+    formData.set('groupId', group.id.toString())
     const res = await fetch(`/api/group/image`, {
-      method: "POST",
+      method: 'POST',
       body: formData,
-    });
-    const ress = await fetchGroup();
-    return [res.ok, ress];
-  };
+    })
+    const ress = await fetchGroup()
+    return [res.ok, ress]
+  }
   const updateGroup = async (group: Group) => {
     const res = await fetch(`/api/group/${group.id}`, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify(group),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-    });
-    const ress = await fetchGroup();
-    return [res.ok, ress];
-  };
+    })
+    const ress = await fetchGroup()
+    return [res.ok, ress]
+  }
   const deleteGroup = async (groupId: number) => {
     const res = await fetch(`/api/group/${groupId}`, {
-      method: "DELETE",
-    });
-    const ress = await fetchGroup();
-    return [res.ok, ress];
-  };
+      method: 'DELETE',
+    })
+    const ress = await fetchGroup()
+    return [res.ok, ress]
+  }
   const onOrderUpdate = async (iimages: Image[]) => {
-    const idNoList = iimages.map((image, no) => [image.groupImageId, no]);
+    const idNoList = iimages.map((image, no) => [image.groupImageId, no])
     const res = await fetch(`/api/group/image/order`, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify(idNoList),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-    });
-    const ress = await fetchGroup();
-    return [res.ok, ress];
-  };
+    })
+    const ress = await fetchGroup()
+    return [res.ok, ress]
+  }
   const onImageDelete = async (img: Image) => {
     const res = await fetch(`/api/group/image/${img.groupImageId}`, {
-      method: "DELETE",
-    });
-    const ress = await fetchGroup();
-    return [res.ok, ress];
-  };
+      method: 'DELETE',
+    })
+    const ress = await fetchGroup()
+    return [res.ok, ress]
+  }
   const menuItems = [
-    "グループ詳細",
-    "アップロード",
-    "画像リスト",
-    "クローラーツール",
-  ];
+    'グループ詳細',
+    'アップロード',
+    '画像リスト',
+    'クローラーツール',
+  ]
   const contents = [
     <GroupInfo
       key={0}
@@ -180,17 +179,17 @@ const GroupPage: NextPage<Props> = (props: Props) => {
       onImageDelete={onImageDelete}
     />,
     <GroupImageCrawler groupId={group.id} key={3} onUpdate={fetchGroup} />,
-  ];
-  const [menuToggle, setMenuToggle] = useState<boolean>(false);
+  ]
+  const [menuToggle, setMenuToggle] = useState<boolean>(false)
   const handleMenuToggle = () => {
-    setMenuToggle(!menuToggle);
-  };
+    setMenuToggle(!menuToggle)
+  }
   return (
     <Layout>
       <div className={styles.panel}>
         {!menuToggle && (
           <button onClick={handleMenuToggle} className={styles.toggleButton}>
-            {">>"}
+            {'>>'}
           </button>
         )}
         {menuToggle && (
@@ -200,13 +199,13 @@ const GroupPage: NextPage<Props> = (props: Props) => {
               className={styles.toggleButton}
               onClick={handleMenuToggle}
             >
-              {"<<"}
+              {'<<'}
             </button>
             {menuItems.map((item, index) => (
               <div
                 key={index}
                 className={`${styles.menuItem} ${
-                  index === selectedItem ? styles.active : ""
+                  index === selectedItem ? styles.active : ''
                 }`}
                 onClick={() => setSelectedItem(index)}
               >
@@ -221,7 +220,7 @@ const GroupPage: NextPage<Props> = (props: Props) => {
         </div>
       </div>
     </Layout>
-  );
-};
+  )
+}
 
-export default GroupPage;
+export default GroupPage
