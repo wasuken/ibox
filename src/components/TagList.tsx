@@ -1,5 +1,5 @@
-import styles from '@/styles/Index.module.css'
 import { SearchParams, Tag } from '@/types'
+import { Badge, Col, Container, Row } from 'react-bootstrap'
 
 function generateHref(params: SearchParams) {
   if (!params.tag) params.tag = ''
@@ -25,16 +25,31 @@ const initParams = () => {
 
 export default function TagList(props: Props) {
   const { tagList } = props
+
+  if (tagList.length === 0) {
+    return null
+  }
+
   return (
-    <div className={styles['tag-area']}>
-      <h2>タグ</h2>
-      <div className={styles['tag-cloud']}>
-        {tagList.map((tag, i) => (
-          <a key={i} href={generateHref({ ...initParams(), tag: tag.name })}>
-            {tag.name}
-          </a>
-        ))}
-      </div>
-    </div>
+    <Container className="mb-5">
+      <Row>
+        <Col>
+          <h4 className="fw-bold mb-3">🏷️ Browse by Tags</h4>
+          <div className="d-flex flex-wrap gap-2">
+            {tagList.map((tag, i) => (
+              <Badge
+                key={i}
+                as="a"
+                href={generateHref({ ...initParams(), tag: tag.name })}
+                className="tag-item text-decoration-none p-2"
+                style={{ fontSize: '0.9rem' }}
+              >
+                {tag.name}
+              </Badge>
+            ))}
+          </div>
+        </Col>
+      </Row>
+    </Container>
   )
 }

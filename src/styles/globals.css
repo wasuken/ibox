@@ -1,31 +1,40 @@
 /* Bootstrap ダークテーマ カスタマイズ - 文字色修正版 */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
 :root {
-  --bs-body-bg: #1a1a1a;
-  --bs-body-color: #ffffff;
-  --bs-card-bg: #2d2d2d;
-  --bs-border-color: #404040;
+  --bs-body-bg: #ffffff;
+  --bs-body-color: #000000;
+  --bs-card-bg: #f8f9fa;
+  --bs-border-color: #dee2e6;
   --bs-primary: #0d6efd;
   --bs-secondary: #6c757d;
   --bs-success: #198754;
   --bs-danger: #dc3545;
   --bs-warning: #ffc107;
-  --bs-dark: #212529;
-  --bs-light: #f8f9fa;
-  --bs-text-white: #ffffff;
-  --bs-text-light: #e9ecef;
-  --bs-text-muted: #adb5bd;
 }
 
 body {
   background-color: var(--bs-body-bg) !important;
-  color: var(--bs-text-white) !important;
+  color: #000000 !important;
   margin: 0;
   padding: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   min-height: 100vh;
 }
 
-/* 全体的な文字色の強制 */
+a,
+button,
+.btn,
+.nav-link,
+.card {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* 全ての文字を黒 + 白縁取り */
 h1,
 h2,
 h3,
@@ -36,7 +45,8 @@ p,
 div,
 span,
 a {
-  color: var(--bs-text-white) !important;
+  color: #000000 !important;
+  text-shadow: 0.5px 0.5px 1px rgba(255, 255, 255, 0.8) !important;
 }
 
 /* リンクの色 */
@@ -49,12 +59,17 @@ a:hover {
   color: #4dabf7 !important;
 }
 
+a:hover,
+button:hover,
+.btn:hover {
+  text-shadow: none !important;
+}
+
 /* Card スタイル */
 .card {
   background-color: var(--bs-card-bg) !important;
-  border-color: var(--bs-border-color) !important;
-  color: var(--bs-text-white) !important;
-  transition: all 0.3s ease;
+  border: 1px solid var(--bs-border-color) !important;
+  color: #000000 !important;
 }
 
 .card:hover {
@@ -73,8 +88,7 @@ a:hover {
 
 /* ボタンスタイル */
 .btn {
-  transition: all 0.2s ease;
-  font-weight: 500;
+  text-shadow: none !important;
 }
 
 .btn-primary {
@@ -115,16 +129,24 @@ a:hover {
 
 /* フォーム */
 .form-control {
-  background-color: #3d3d3d !important;
-  border-color: var(--bs-border-color) !important;
-  color: var(--bs-text-white) !important;
+  background-color: #ffffff !important;
+  border: 1px solid var(--bs-border-color) !important;
+  color: #000000 !important;
 }
 
 .form-control:focus {
-  background-color: #3d3d3d !important;
+  background-color: #ffffff !important; /* フォーカス時も白背景 */
   border-color: var(--bs-primary) !important;
-  color: var(--bs-text-white) !important;
+  color: #000000 !important;
   box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important;
+}
+
+textarea.form-control {
+  background-color: #ffffff !important;
+}
+
+textarea.form-control:focus {
+  background-color: #ffffff !important;
 }
 
 .form-control::placeholder {
@@ -140,9 +162,19 @@ a:hover {
   color: var(--bs-text-muted) !important;
 }
 
+.form-select {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.form-select:focus {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
 /* ナビゲーション */
 .navbar {
-  background-color: #0f0f0f !important;
+  background-color: #f8f9fa !important;
   border-bottom: 1px solid var(--bs-border-color);
 }
 
@@ -197,7 +229,8 @@ a:hover {
 
 /* テキストユーティリティ */
 .text-muted {
-  color: var(--bs-text-muted) !important;
+  color: #6c757d !important;
+  text-shadow: 1px 1px 1px #ffffff !important;
 }
 
 .text-light {
@@ -243,7 +276,7 @@ a:hover {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: #0d0d0d; /* #1a1a1a → #0d0d0d に変更 */
 }
 
 ::-webkit-scrollbar-thumb {
@@ -290,7 +323,7 @@ a:hover {
 
 /* フッター */
 footer {
-  background-color: #0f0f0f !important;
+  background-color: #1a1a1a !important; /* 同じく濃いグレー */
   border-top: 1px solid var(--bs-border-color);
   color: var(--bs-text-muted) !important;
 }

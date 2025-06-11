@@ -1,6 +1,5 @@
-import styles from '@/styles/GroupImageUploader.module.css'
-import Image from 'next/image'
 import { useRef, useState } from 'react'
+import { Alert, Badge, Button, Card, Form, Spinner } from 'react-bootstrap'
 
 type Props = {
   onUpload: (
@@ -14,9 +13,10 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [displayNo, setDisplayNo] = useState<number>(0)
-  const [isBalloon, setIsBalloon] = useState(false)
-  const [balloonMessage, setBalloonMessage] = useState('')
   const [fileName, setFileName] = useState<string>('')
+  const [isUploading, setIsUploading] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [showError, setShowError] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +39,7 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
       setPreviewUrl(null)
     }
   }
+
   const clearInput = () => {
     setSelectedFile(null)
     setPreviewUrl(null)
@@ -51,89 +52,140 @@ const GroupImageUploader: React.FC<Props> = ({ onUpload }) => {
 
   const handleUploadClick = async () => {
     if (selectedFile) {
-      const [isUp] = await onUpload(selectedFile, displayNo, fileName)
-      setIsBalloon(true)
-      clearInput()
-      if (isUp) {
-        setBalloonMessage('アップロードに成功しました。')
-      } else {
-        setBalloonMessage('アップロードに失敗しました。')
+      setIsUploading(true)
+      try {
+        const [isUp] = await onUpload(selectedFile, displayNo, fileName)
+        if (isUp) {
+          setShowSuccess(true)
+          clearInput()
+          setTimeout(() => setShowSuccess(false), 3000)
+        } else {
+          setShowError(true)
+          setTimeout(() => setShowError(false), 3000)
+        }
+      } finally {
+        setIsUploading(false)
       }
     }
   }
-  const handleDeleteClick = () => {
-    clearInput()
-  }
-  const handleBalloonDeleteClick = () => {
-    setIsBalloon(false)
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
   return (
-    <div className={styles.container}>
-      {isBalloon && (
-        <div className={styles.balloonContainer}>
-          <div className={styles.message}>{balloonMessage}</div>
-          <button
-            onClick={handleBalloonDeleteClick}
-            className={styles.balloonDeleteButton}
-          >
-            &#x2716;
-          </button>
-        </div>
-      )}
-      <h2>Group Image Uploader</h2>
-      {previewUrl && (
-        <div className={styles.previewContainer}>
-          <Image
-            width={500}
-            height={500}
-            src={previewUrl}
-            alt="preview"
-            className={styles.preview}
+    <Card>
+      <Card.Header>
+        <h5 className="mb-0">📤 単体画像アップロード</h5>
+      </Card.Header>
+      <Card.Body>
+        {/* アラート */}
+        {showSuccess && (
+          <Alert variant="success" className="mb-3">
+            ✅ アップロードに成功しました！
+          </Alert>
+        )}
+        {showError && (
+          <Alert variant="danger" className="mb-3">
+            ❌ アップロードに失敗しました。
+          </Alert>
+        )}
+
+        {/* プレビューエリア */}
+        {previewUrl && (
+          <Card className="mb-3">
+            <Card.Body className="text-center position-relative">
+              <img
+                src={previewUrl}
+                alt="プレビュー"
+                className="img-fluid rounded"
+                style={{ maxHeight: '300px', maxWidth: '100%' }}
+              />
+              <Button
+                variant="outline-danger"
+                size="sm"
+                className="position-absolute top-0 end-0 m-2"
+                onClick={clearInput}
+              >
+                ✕
+              </Button>
+              {selectedFile && (
+                <div className="mt-2">
+                  <Badge bg="secondary">
+                    {formatFileSize(selectedFile.size)}
+                  </Badge>
+                </div>
+              )}
+            </Card.Body>
+          </Card>
+        )}
+
+        {/* ファイル選択 */}
+        <Form.Group className="mb-3">
+          <Form.Label className="fw-bold">画像ファイル選択</Form.Label>
+          <Form.Control
+            type="file"
+            accept="image/*"
+            onChange={handleFileInputChange}
+            ref={fileInputRef}
+            disabled={isUploading}
           />
-          <button onClick={handleDeleteClick} className={styles.deleteButton}>
-            &#x2716;
-          </button>
+          <Form.Text className="text-muted">
+            JPG, PNG, GIF, WebP形式をサポート
+          </Form.Text>
+        </Form.Group>
+
+        {/* ファイル名 */}
+        <Form.Group className="mb-3">
+          <Form.Label className="fw-bold">ファイル名</Form.Label>
+          <Form.Control
+            type="text"
+            value={fileName}
+            onChange={handleFileNameChange}
+            placeholder="ファイル名を入力"
+            disabled={isUploading}
+          />
+        </Form.Group>
+
+        {/* 表示順 */}
+        <Form.Group className="mb-4">
+          <Form.Label className="fw-bold">表示順</Form.Label>
+          <Form.Control
+            type="number"
+            min={0}
+            value={displayNo}
+            onChange={(e) => setDisplayNo(parseInt(e.target.value) || 0)}
+            disabled={isUploading}
+          />
+          <Form.Text className="text-muted">
+            数字が小さいほど先頭に表示されます
+          </Form.Text>
+        </Form.Group>
+
+        {/* アップロードボタン */}
+        <div className="d-grid">
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={handleUploadClick}
+            disabled={!selectedFile || isUploading}
+          >
+            {isUploading ? (
+              <>
+                <Spinner size="sm" className="me-2" />
+                アップロード中...
+              </>
+            ) : (
+              <>📤 アップロード実行</>
+            )}
+          </Button>
         </div>
-      )}
-      <label htmlFor="display_no" className={styles.displayNolabel}>
-        表示順:
-        <input
-          type="number"
-          min={0}
-          id="display_no"
-          name="display_no"
-          value={displayNo}
-          onChange={(e) => setDisplayNo(parseInt(e.target.value))}
-          className={styles.displayNo}
-        />
-      </label>
-      <label htmlFor="file" className={styles.label}>
-        <input
-          id="file"
-          type="file"
-          accept="image/*"
-          onChange={handleFileInputChange}
-          className={styles.fileInput}
-          ref={fileInputRef}
-        />
-      </label>
-      <label htmlFor="fileName" className={styles.label}>
-        ファイル名:
-        <input
-          id="fileName"
-          type="text"
-          onChange={handleFileNameChange}
-          value={fileName}
-          className={styles.input}
-        />
-      </label>
-      <div className={styles.btnLine}>
-        <button onClick={handleUploadClick} className={styles.button}>
-          Upload
-        </button>
-      </div>
-    </div>
+      </Card.Body>
+    </Card>
   )
 }
 

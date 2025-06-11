@@ -3,14 +3,14 @@ import { Group, Image } from '@/types'
 import { PrismaClient } from '@prisma/client'
 import { GetServerSideProps, NextPage } from 'next'
 
-import GroupInfo from '@/components/GroupInfo'
-// import GroupImageListUp from "@/components/GroupImageListUp";
 import GroupImageCrawler from '@/components/GroupImageCrawler'
 import GroupImageList from '@/components/GroupImageList'
 import GroupImageMultiUploader from '@/components/GroupImageMultiUploader'
-import styles from '@/styles/GroupDetail.module.css'
+import GroupImageUploader from '@/components/GroupImageUploader'
+import GroupInfo from '@/components/GroupInfo'
 
 import { useState } from 'react'
+import { Col, Container, Nav, Row, Tab } from 'react-bootstrap'
 
 const prisma = new PrismaClient()
 
@@ -88,9 +88,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 }
 
 const GroupPage: NextPage<Props> = (props: Props) => {
-  const [selectedItem, setSelectedItem] = useState(0)
   const [group, setGroup] = useState<Group>(props.group)
   const [images, setImages] = useState<Image[]>(props.group.images)
+
   const fetchGroup = async () => {
     const id = props.group.id
     try {
@@ -103,6 +103,7 @@ const GroupPage: NextPage<Props> = (props: Props) => {
       return false
     }
   }
+
   const postImage = async (
     imageFile: File,
     displayNo: number,
@@ -121,6 +122,7 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     const ress = await fetchGroup()
     return [res.ok, ress]
   }
+
   const updateGroup = async (group: Group) => {
     const res = await fetch(`/api/group/${group.id}`, {
       method: 'PUT',
@@ -132,6 +134,7 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     const ress = await fetchGroup()
     return [res.ok, ress]
   }
+
   const deleteGroup = async (groupId: number) => {
     const res = await fetch(`/api/group/${groupId}`, {
       method: 'DELETE',
@@ -139,6 +142,7 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     const ress = await fetchGroup()
     return [res.ok, ress]
   }
+
   const onOrderUpdate = async (iimages: Image[]) => {
     const idNoList = iimages.map((image, no) => [image.groupImageId, no])
     const res = await fetch(`/api/group/image/order`, {
@@ -151,6 +155,7 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     const ress = await fetchGroup()
     return [res.ok, ress]
   }
+
   const onImageDelete = async (img: Image) => {
     const res = await fetch(`/api/group/image/${img.groupImageId}`, {
       method: 'DELETE',
@@ -158,67 +163,81 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     const ress = await fetchGroup()
     return [res.ok, ress]
   }
-  const menuItems = [
-    'グループ詳細',
-    'アップロード',
-    '画像リスト',
-    'クローラーツール',
-  ]
-  const contents = [
-    <GroupInfo
-      key={0}
-      group={group}
-      onSave={updateGroup}
-      onDelete={deleteGroup}
-    />,
-    <GroupImageMultiUploader key={1} onUpload={postImage} />,
-    <GroupImageList
-      key={2}
-      images={images}
-      onOrderUpdate={onOrderUpdate}
-      onImageDelete={onImageDelete}
-    />,
-    <GroupImageCrawler groupId={group.id} key={3} onUpdate={fetchGroup} />,
-  ]
-  const [menuToggle, setMenuToggle] = useState<boolean>(false)
-  const handleMenuToggle = () => {
-    setMenuToggle(!menuToggle)
-  }
+
   return (
     <Layout>
-      <div className={styles.panel}>
-        {!menuToggle && (
-          <button onClick={handleMenuToggle} className={styles.toggleButton}>
-            {'>>'}
-          </button>
-        )}
-        {menuToggle && (
-          <div className={styles.menu}>
-            <button
-              type="button"
-              className={styles.toggleButton}
-              onClick={handleMenuToggle}
-            >
-              {'<<'}
-            </button>
-            {menuItems.map((item, index) => (
-              <div
-                key={index}
-                className={`${styles.menuItem} ${
-                  index === selectedItem ? styles.active : ''
-                }`}
-                onClick={() => setSelectedItem(index)}
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-        )}
-        <div className={styles.content}>
-          <h2 className={styles.title}>{props.group.name}</h2>
-          {contents[selectedItem]}
-        </div>
-      </div>
+      <Container fluid>
+        <Row className="mb-4">
+          <Col>
+            <h1 className="fw-bold">{props.group.name}</h1>
+            <p className="text-muted">グループ管理ダッシュボード</p>
+          </Col>
+        </Row>
+
+        <Tab.Container defaultActiveKey="info">
+          <Row>
+            <Col>
+              {/* タブナビゲーション */}
+              <Nav variant="tabs" className="mb-4">
+                <Nav.Item>
+                  <Nav.Link eventKey="info">⚙️ グループ詳細</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="upload">📤 アップロード</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="images">
+                    🖼️ 画像リスト ({images.length})
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="crawler">🕷️ クローラーツール</Nav.Link>
+                </Nav.Item>
+              </Nav>
+
+              {/* タブコンテンツ */}
+              <Tab.Content>
+                {/* グループ詳細タブ */}
+                <Tab.Pane eventKey="info">
+                  <GroupInfo
+                    group={group}
+                    onSave={updateGroup}
+                    onDelete={deleteGroup}
+                  />
+                </Tab.Pane>
+
+                {/* アップロードタブ */}
+                <Tab.Pane eventKey="upload">
+                  <Row>
+                    <Col lg={6} className="mb-4">
+                      <h4 className="fw-bold mb-3">📤 単体アップロード</h4>
+                      <GroupImageUploader onUpload={postImage} />
+                    </Col>
+                    <Col lg={6}>
+                      <h4 className="fw-bold mb-3">📦 一括アップロード</h4>
+                      <GroupImageMultiUploader onUpload={postImage} />
+                    </Col>
+                  </Row>
+                </Tab.Pane>
+
+                {/* 画像リストタブ */}
+                <Tab.Pane eventKey="images">
+                  <GroupImageList
+                    images={images}
+                    onOrderUpdate={onOrderUpdate}
+                    onImageDelete={onImageDelete}
+                  />
+                </Tab.Pane>
+
+                {/* クローラーツールタブ */}
+                <Tab.Pane eventKey="crawler">
+                  <GroupImageCrawler groupId={group.id} onUpdate={fetchGroup} />
+                </Tab.Pane>
+              </Tab.Content>
+            </Col>
+          </Row>
+        </Tab.Container>
+      </Container>
     </Layout>
   )
 }
