@@ -34,7 +34,7 @@ export default function TagList(props: Props) {
     <Container className="mb-5">
       <Row>
         <Col>
-          <h4 className="fw-bold mb-3">🏷️ Browse by Tags</h4>
+          <h4 className="fw-bold mb-3">🏷️ Tags一覧</h4>
           <div className="d-flex flex-wrap gap-2">
             {tagList.map((tag, i) => (
               <Badge

@@ -15,7 +15,7 @@ export default function GroupList(props: Props) {
         <Col>
           <div className="d-flex justify-content-between align-items-center">
             <div>
-              <h2 className="fw-bold mb-1">Gallery</h2>
+              <h2 className="fw-bold mb-1">画像グループ</h2>
               <p className="text-muted mb-0">
                 {groupList.length} groups available
               </p>

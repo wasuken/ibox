@@ -87,9 +87,7 @@ export default function Home() {
           <Col md={8} lg={6}>
             <Card>
               <Card.Body>
-                <h5 className="card-title text-center mb-3">
-                  🔍 Search Gallery
-                </h5>
+                <h5 className="card-title text-center mb-3">🔍 検索</h5>
                 <Form onSubmit={handleSearchSubmit}>
                   <div className="d-flex gap-2">
                     <Form.Control
