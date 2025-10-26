@@ -39,6 +39,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       id: true,
       title: true,
       description: true,
+      createdAt: true,
       groupTags: {
         select: {
           tag: {

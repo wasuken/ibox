@@ -134,6 +134,7 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
                 />
               </Form.Group>
 
+	      
               <Form.Group className="mb-4">
                 <Form.Label className="fw-bold mb-2">
                   Tags Management
@@ -154,6 +155,30 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
                     + Add Tag
                   </Button>
                 </div>
+                <div>
+                  {tags.length > 0 ? (
+                    <div className="d-flex flex-wrap gap-2">
+                      {tags.map((tag, index) => (
+                        <Badge
+                          key={index}
+                          bg="primary"
+                          className="p-2"
+                          style={{
+                            cursor: 'pointer',
+                            fontSize: '0.8rem',
+                          }}
+                          onClick={() => removeTag(tag)}
+                        >
+                          {tag} ✕
+                        </Badge>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted mb-0">
+                      いまはタグがありません。追加して整理しましょう。
+                    </p>
+                  )}
+                </div>
               </Form.Group>
             </Card.Body>
           </Card>
@@ -162,37 +187,6 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
         {/* 右側: プレビュー・アクション */}
         <Col lg={4}>
           <div className="sticky-top" style={{ top: '90px' }}>
-            {/* タグプレビュー */}
-            <Card className="mb-3">
-              <Card.Header>
-                <h5 className="mb-0">🏷️ Tag ({tags.length})</h5>
-              </Card.Header>
-              <Card.Body>
-                {tags.length > 0 ? (
-                  <div className="d-flex flex-wrap gap-2">
-                    {tags.map((tag, index) => (
-                      <Badge
-                        key={index}
-                        bg="primary"
-                        className="p-2"
-                        style={{
-                          cursor: 'pointer',
-                          fontSize: '0.8rem',
-                        }}
-                        onClick={() => removeTag(tag)}
-                      >
-                        {tag} ✕
-                      </Badge>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-muted mb-0">
-                    タグがない. タグを追加してください!
-                  </p>
-                )}
-              </Card.Body>
-            </Card>
-
             {/* グループ統計 */}
             <Card className="mb-3">
               <Card.Header>

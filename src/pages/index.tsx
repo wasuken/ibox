@@ -77,10 +77,10 @@ export default function Home() {
         <Row className="text-center py-5 mb-5">
           <Col>
             <h1 className="display-4 fw-bold mb-3">
-              Welcome to <span className="text-primary">iBox</span>
+              <span className="text-primary">iBox</span>
             </h1>
             <p className="lead text-muted mb-4">
-              Simple & Modern Gallery for your image collections
+              画像管理ツール
             </p>
           </Col>
         </Row>
