@@ -96,9 +96,12 @@ const GroupPage: NextPage<Props> = (props: Props) => {
     const id = props.group.id
     try {
       const res = await fetch(`/api/group/${id}`)
+      if (!res.ok) {
+        return false
+      }
       const resj = await res.json()
       setGroup(resj)
-      setImages(resj.images)
+      setImages(resj.images ?? [])
       return true
     } catch (e) {
       return false

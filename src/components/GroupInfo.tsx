@@ -80,7 +80,7 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
         <Col lg={8}>
           <Card className="h-100">
             <Card.Header className="bg-primary text-white">
-              <h4 className="mb-0">📝 Edit Group Information</h4>
+              <h4 className="mb-0">📝 グループ情報の編集</h4>
             </Card.Header>
             <Card.Body className="p-4">
               {showSuccess && (
@@ -92,29 +92,25 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-4">
-                    <Form.Label className="fw-bold mb-2">Group Name</Form.Label>
+                    <Form.Label className="fw-bold mb-2">グループ名</Form.Label>
                     <Form.Control
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Enter group name"
+                      placeholder="グループ名を入力してください"
                       size="lg"
                     />
                   </Form.Group>
                 </Col>
                 <Col md={6}>
                   <Form.Group className="mb-4">
-                    <Form.Label className="fw-bold mb-2">
-                      Created Date
-                    </Form.Label>
+                    <Form.Label className="fw-bold mb-2">作成日</Form.Label>
                     <Form.Control
                       type="text"
                       value={
                         group.createdAt
-                          ? new Date(group.createdAt).toLocaleDateString(
-                              'ja-JP',
-                            )
-                          : 'Unknown'
+                          ? new Date(group.createdAt).toLocaleDateString('ja-JP')
+                          : '不明'
                       }
                       disabled
                       size="lg"
@@ -124,20 +120,19 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
               </Row>
 
               <Form.Group className="mb-4">
-                <Form.Label className="fw-bold mb-2">Description</Form.Label>
+                <Form.Label className="fw-bold mb-2">説明</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Describe your group..."
+                  placeholder="グループの概要を入力してください"
                 />
               </Form.Group>
 
-	      
               <Form.Group className="mb-4">
                 <Form.Label className="fw-bold mb-2">
-                  Tags Management
+                  タグの管理
                 </Form.Label>
                 <div className="d-flex gap-2 mb-3">
                   <Form.Control
@@ -145,14 +140,14 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyPress={handleTagKeyPress}
-                    placeholder="Add new tag..."
+                    placeholder="追加したいタグを入力してください"
                   />
                   <Button
                     variant="outline-primary"
                     onClick={addTag}
                     disabled={!tagInput.trim()}
                   >
-                    + Add Tag
+                    タグを追加
                   </Button>
                 </div>
                 <div>
@@ -198,11 +193,11 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
                     <h4 className="text-primary mb-0">
                       {group.images?.length || 0}
                     </h4>
-                    <small className="text-muted">Images</small>
+                    <small className="text-muted">画像</small>
                   </div>
                   <div className="col-6">
                     <h4 className="text-success mb-0">{tags.length}</h4>
-                    <small className="text-muted">Tags</small>
+                    <small className="text-muted">タグ</small>
                   </div>
                 </div>
               </Card.Body>
@@ -221,7 +216,7 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
                     {isLoading ? (
                       <>
                         <Spinner size="sm" className="me-2" />
-                        Saving...
+                        保存中...
                       </>
                     ) : (
                       <>💾 保存する</>
