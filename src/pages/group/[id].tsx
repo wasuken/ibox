@@ -40,6 +40,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       title: true,
       description: true,
       createdAt: true,
+      viewCount: true,
+      lastViewedAt: true,
       groupTags: {
         select: {
           tag: {
@@ -69,9 +71,23 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     },
   })
   if (!group) return emptyResponse
+  const now = new Date()
+  await prisma.group.update({
+    where: {
+      id: group.id,
+    },
+    data: {
+      viewCount: {
+        increment: 1,
+      },
+      lastViewedAt: now,
+    },
+  })
   const jgroup = {
     ...JSON.parse(JSON.stringify(group)),
     name: group.title,
+    viewCount: (group.viewCount ?? 0) + 1,
+    lastViewedAt: now.toISOString(),
     tags: group.groupTags.map((t) => t.tag.name),
     images: group?.groupImages.map((gi) => {
       return {
@@ -100,6 +116,10 @@ const GroupPage: NextPage<Props> = (props: Props) => {
         return false
       }
       const resj = await res.json()
+      resj.createdAt = resj.createdAt ? new Date(resj.createdAt) : null
+      resj.lastViewedAt = resj.lastViewedAt
+        ? new Date(resj.lastViewedAt)
+        : null
       setGroup(resj)
       setImages(resj.images ?? [])
       return true

@@ -119,6 +119,37 @@ const GroupInfo: React.FC<Props> = ({ group, onSave, onDelete }) => {
                 </Col>
               </Row>
 
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-4">
+                    <Form.Label className="fw-bold mb-2">閲覧数</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={`${Number(group.viewCount ?? 0).toLocaleString(
+                        'ja-JP',
+                      )} 回`}
+                      disabled
+                      size="lg"
+                    />
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-4">
+                    <Form.Label className="fw-bold mb-2">最終閲覧</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={
+                        group.lastViewedAt
+                          ? new Date(group.lastViewedAt).toLocaleString('ja-JP')
+                          : '未記録'
+                      }
+                      disabled
+                      size="lg"
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
               <Form.Group className="mb-4">
                 <Form.Label className="fw-bold mb-2">説明</Form.Label>
                 <Form.Control

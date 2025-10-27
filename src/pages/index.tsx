@@ -13,11 +13,23 @@ import {
   Spinner,
 } from 'react-bootstrap'
 
+const SORT_OPTIONS = [
+  { value: 'created_desc', label: '新しい順' },
+  { value: 'created_asc', label: '古い順' },
+  { value: 'views_desc', label: '閲覧数が多い順' },
+  { value: 'views_asc', label: '閲覧数が少ない順' },
+  { value: 'updated_desc', label: '最終更新が新しい順' },
+  { value: 'updated_asc', label: '最終更新が古い順' },
+  { value: 'name_asc', label: '名前順 (A → Z)' },
+  { value: 'name_desc', label: '名前順 (Z → A)' },
+]
+
 export default function Home() {
   const [groupList, setGroupList] = useState<Group[]>([])
   const [tagList, setTagList] = useState<Tag[]>([])
   const [searchText, setSearchText] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [sortOption, setSortOption] = useState<string>('created_desc')
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value)
@@ -28,14 +40,23 @@ export default function Home() {
     fetchGroupSearch()
   }
 
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOption(event.target.value)
+  }
+
   function fetchGroupList() {
     setIsLoading(true)
-    fetch(`/api/groups${location.search}`)
+    const params = new URLSearchParams(location.search)
+    params.set('sort', sortOption)
+    const queryString = params.toString()
+    fetch(`/api/groups${queryString ? `?${queryString}` : ''}`)
       .then((res) => res.json())
       .then((js) => {
         const jss = js.map((o: any) => ({
           ...o,
           createdAt: new Date(o.createdAt),
+          lastViewedAt: o.lastViewedAt ? new Date(o.lastViewedAt) : null,
+          viewCount: o.viewCount ?? 0,
           tags: o.tags.map((x: Tag) => x.name),
         }))
         setGroupList(jss)
@@ -45,12 +66,22 @@ export default function Home() {
 
   function fetchGroupSearch() {
     setIsLoading(true)
-    fetch(`/api/groups?query=${searchText}`)
+    const params = new URLSearchParams(location.search)
+    if (searchText) {
+      params.set('query', searchText)
+    } else {
+      params.delete('query')
+    }
+    params.set('sort', sortOption)
+    const queryString = params.toString()
+    fetch(`/api/groups${queryString ? `?${queryString}` : ''}`)
       .then((res) => res.json())
       .then((js) => {
         const jss = js.map((o: any) => ({
           ...o,
           createdAt: new Date(o.createdAt),
+          lastViewedAt: o.lastViewedAt ? new Date(o.lastViewedAt) : null,
+          viewCount: o.viewCount ?? 0,
           tags: o.tags.map((x: Tag) => x.name),
         }))
         setGroupList(jss)
@@ -68,8 +99,11 @@ export default function Home() {
 
   useEffect(() => {
     fetchTagList()
-    fetchGroupList()
   }, [])
+
+  useEffect(() => {
+    fetchGroupList()
+  }, [sortOption])
 
   return (
     <Layout>
@@ -96,14 +130,30 @@ export default function Home() {
                       type="text"
                       value={searchText}
                       onChange={handleSearchInputChange}
-                      placeholder="Search groups..."
+                      placeholder="グループを検索..."
                       className="flex-grow-1"
                     />
                     <Button type="submit" variant="primary">
-                      Search
+                      検索
                     </Button>
                   </div>
                 </Form>
+                <Form.Group className="mt-3">
+                  <Form.Label className="fw-bold text-muted small">
+                    並び替え
+                  </Form.Label>
+                  <Form.Select
+                    value={sortOption}
+                    onChange={handleSortChange}
+                    aria-label="ソート順を選択"
+                  >
+                    {SORT_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
               </Card.Body>
             </Card>
           </Col>
@@ -115,8 +165,8 @@ export default function Home() {
           <Row>
             <Col className="text-center py-5">
               <Spinner animation="border" variant="primary" className="mb-3" />
-              <h5>Loading gallery...</h5>
-              <p className="text-muted">Please wait a moment</p>
+              <h5>読み込み中...</h5>
+              <p className="text-muted">少々お待ちください</p>
             </Col>
           </Row>
         ) : (

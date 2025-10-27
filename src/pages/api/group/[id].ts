@@ -16,15 +16,17 @@ export default async function handler(
         where: {
           id,
         },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      viewCount: true,
+      lastViewedAt: true,
+      groupTags: {
         select: {
-          id: true,
-          title: true,
-          description: true,
-          groupTags: {
+          tag: {
             select: {
-              tag: {
-                select: {
-                  name: true,
+              name: true,
                 },
               },
             },
@@ -55,6 +57,8 @@ export default async function handler(
       const jgroup = {
         ...JSON.parse(JSON.stringify(group)),
         name: group.title,
+        viewCount: group.viewCount,
+        lastViewedAt: group.lastViewedAt.toISOString(),
         tags: group.groupTags.map((t) => t.tag.name),
         images: group?.groupImages.map((gi) => {
           return {

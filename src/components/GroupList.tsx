@@ -1,6 +1,13 @@
 import { Group } from '@/types'
 import NextImage from 'next/image'
-import { Badge, Button, Card, Col, Container, Row } from 'react-bootstrap'
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Container,
+  Row,
+} from 'react-bootstrap'
 
 interface Props {
   groupList: Group[]
@@ -17,11 +24,11 @@ export default function GroupList(props: Props) {
             <div>
               <h2 className="fw-bold mb-1">画像グループ</h2>
               <p className="text-muted mb-0">
-                {groupList.length} groups available
+                {groupList.length}件のグループ
               </p>
             </div>
             <Button variant="primary" href="/group">
-              + Create New Group
+              + 新しいグループを作成
             </Button>
           </div>
         </Col>
@@ -56,7 +63,7 @@ export default function GroupList(props: Props) {
                           className="position-absolute top-0 end-0 m-2"
                           style={{ fontSize: '0.7rem' }}
                         >
-                          {group.images.length} photos
+                          {group.images.length}枚
                         </Badge>
                       </>
                     ) : (
@@ -99,6 +106,19 @@ export default function GroupList(props: Props) {
                     </small>
                   </Card.Body>
                 </a>
+                <Card.Footer className="bg-white border-0 pt-0">
+                  <div className="d-flex justify-content-between text-muted small">
+                    <span>👀 {group.viewCount.toLocaleString('ja-JP')}回</span>
+                    {group.lastViewedAt && (
+                      <span>
+                        最終閲覧:{' '}
+                        {new Date(group.lastViewedAt).toLocaleDateString(
+                          'ja-JP',
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </Card.Footer>
               </Card>
             </Col>
           ))}
@@ -107,12 +127,12 @@ export default function GroupList(props: Props) {
         <Row>
           <Col className="text-center py-5">
             <div style={{ fontSize: '4rem' }}>📂</div>
-            <h4 className="fw-bold mb-2">No groups yet</h4>
+            <h4 className="fw-bold mb-2">グループがまだありません</h4>
             <p className="text-muted mb-4">
-              Create your first group to get started
+              まずは新しいグループを作成して始めましょう
             </p>
             <Button variant="primary" size="lg" href="/group">
-              + Create Your First Group
+              + 最初のグループを作成
             </Button>
           </Col>
         </Row>

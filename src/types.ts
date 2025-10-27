@@ -15,7 +15,9 @@ export interface Group extends Base {
   description: string
   tags: string[]
   images: Image[]
-  createdAt: Date
+  createdAt: Date | string
+  viewCount: number
+  lastViewedAt: Date | string | null
 }
 
 export interface SearchParams {

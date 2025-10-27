@@ -11,18 +11,24 @@ export default async function handler(
 ) {
   logging(req, res, async (req, res) => {
     if (req.method === 'GET') {
-      const { query: _query, tag: _tag } = req.query
-      const tag = _tag as string
-      const query = _query as string
+      const { query: _query, tag: _tag, sort: _sort } = req.query
+      const tag = Array.isArray(_tag) ? _tag[0] : (_tag as string)
+      const query = Array.isArray(_query) ? _query[0] : (_query as string)
+      const sort = Array.isArray(_sort) ? _sort[0] : (_sort as string)
       const search = generateSearchParam(query, tag)
+      const orderBy = generateOrderBy(sort)
 
       const groupParams = {
         ...search,
+        ...(orderBy ? { orderBy } : {}),
         select: {
           id: true,
           title: true,
           description: true,
           createdAt: true,
+          viewCount: true,
+          lastViewedAt: true,
+          updatedAt: true,
           groupTags: {
             select: {
               tag: {
@@ -68,6 +74,9 @@ export default async function handler(
             }
             delete v.groupImages
             delete v.groupTags
+            if (!v.lastViewedAt) {
+              v.lastViewedAt = null
+            }
             return v
           }
           return null
@@ -78,14 +87,16 @@ export default async function handler(
   })
 }
 
-const generateSearchParam = (query: string, tag: string) => {
+const generateSearchParam = (query?: string, tag?: string) => {
+  const hasQuery = typeof query === 'string' && query.length > 0
+  const hasTag = typeof tag === 'string' && tag.length > 0
   let search: Prisma.GroupFindManyArgs = {}
-  if ((tag && tag.length > 0) || (query && query.length > 0)) {
+  if (hasTag || hasQuery) {
     search = {
       where: {},
     }
   }
-  if (search.where && search.where && tag && tag.length > 0) {
+  if (search.where && hasTag && tag) {
     search.where.groupTags = {
       some: {
         tag: {
@@ -94,7 +105,7 @@ const generateSearchParam = (query: string, tag: string) => {
       },
     }
   }
-  if (search.where && query.length > 0) {
+  if (search.where && hasQuery && query) {
     search.where.OR = [
       {
         title: {
@@ -109,4 +120,27 @@ const generateSearchParam = (query: string, tag: string) => {
     ]
   }
   return search
+}
+
+const generateOrderBy = (sort?: string) => {
+  switch (sort) {
+    case 'views_desc':
+      return { viewCount: Prisma.SortOrder.desc }
+    case 'views_asc':
+      return { viewCount: Prisma.SortOrder.asc }
+    case 'created_asc':
+      return { createdAt: Prisma.SortOrder.asc }
+    case 'created_desc':
+      return { createdAt: Prisma.SortOrder.desc }
+    case 'updated_asc':
+      return { updatedAt: Prisma.SortOrder.asc }
+    case 'updated_desc':
+      return { updatedAt: Prisma.SortOrder.desc }
+    case 'name_asc':
+      return { title: Prisma.SortOrder.asc }
+    case 'name_desc':
+      return { title: Prisma.SortOrder.desc }
+    default:
+      return { createdAt: Prisma.SortOrder.desc }
+  }
 }
